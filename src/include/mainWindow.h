@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow
 private:
     QSplitter* m_splitter;
     UserList* m_userList;
+    Dashboard* m_dashboard;
 public:
     MainWindow();
 

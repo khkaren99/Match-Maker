@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "out",
+            "name": "debug app",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/out",
+            "program": "${workspaceFolder}/bin/app",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

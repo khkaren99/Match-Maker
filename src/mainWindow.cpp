@@ -1,5 +1,6 @@
 #include <QAbstractItemModel>
 #include <QMenuBar>
+#include <QGridLayout>
 
 #include <iostream>
 
@@ -10,17 +11,16 @@
 
 MainWindow::MainWindow()
 {
-    setFixedSize(1000, 300);
-    m_splitter = new QSplitter(this);
+    setWindowTitle(tr("Matchmaking System"));
+//    resize(800, 600);
+
+    QSplitter *spliter = new QSplitter(this);
+    m_dashboard = new Dashboard(spliter);
+    m_userList = new UserList(spliter);
     
-    m_userList = new UserList(this);
-    m_splitter->addWidget(m_userList);
-
-    setCentralWidget(m_splitter);
-
-
-
-
+    spliter->addWidget(m_dashboard);
+    spliter->addWidget(m_userList);
+    setCentralWidget(spliter);
 
 
     // Menu creation
@@ -44,10 +44,5 @@ MainWindow::MainWindow()
     viewMenu->addAction(shUserList);
 //    connect(shDashboard, &QAction::triggered, this, &function);
 //    connect(shUserList, &QAction::triggered, this, &function);
-
-
-
-
-
     
 }

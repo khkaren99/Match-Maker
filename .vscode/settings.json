@@ -71,6 +71,8 @@
         "qtableview": "cpp",
         "qmodelindexlist": "cpp",
         "qmessagebox": "cpp",
-        "qabstracttablemodel": "cpp"
+        "qabstracttablemodel": "cpp",
+        "qsortfilterproxymodel": "cpp",
+        "qboxlayout": "cpp"
     }
 }
