@@ -1,2 +1,6 @@
-qt
-bashrc
+Makefile
+.qmake.stash
+*.o
+*moc*
+build/
+testing/
