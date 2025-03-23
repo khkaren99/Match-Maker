@@ -18,13 +18,12 @@ private:
 
 public:
     UserList(QWidget *parent = nullptr);
-    ~UserList();
 
     void addUser();
     void removeUser();
 
 signals:
-    void userAdded(const QString& userName);
+    void userAdded(const User& user);
     void userRemoved(const QString& userName);
 
 private:

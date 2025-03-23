@@ -19,7 +19,7 @@
 
 
 UserList::UserList(QWidget *parent)
-: QWidget(parent)
+    : QWidget(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     
@@ -37,6 +37,19 @@ UserList::UserList(QWidget *parent)
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_tableView->setFocusPolicy(Qt::NoFocus);
     m_tableView->setSortingEnabled(true);
+    m_tableView->sortByColumn(0, Qt::AscendingOrder);
+
+    {
+        auto addAction = new QAction("+Add User", m_tableView);
+        connect(addAction, &QAction::triggered, this, &UserList::addUser);
+        m_tableView->addAction(addAction);
+        
+        auto removeAction = new QAction("-Remove User", m_tableView);
+        connect(removeAction, &QAction::triggered, this, &UserList::removeUser);
+        m_tableView->addAction(removeAction);
+
+        m_tableView->setContextMenuPolicy(Qt::ActionsContextMenu);
+    }
 
     QHBoxLayout *filterLine = new QHBoxLayout(layout->widget());
     QLabel *filterNameLabel = new QLabel("UserName filter:", filterLine->widget());
@@ -45,15 +58,10 @@ UserList::UserList(QWidget *parent)
     filterLine->addWidget(filterNameLabel);
     filterLine->addWidget(filterNameEdit);
     filterLine->addWidget(filterButton);
-    
+
     layout->addWidget(m_tableView, 0);
     layout->addLayout(filterLine, 1);
     connect(filterButton, &QPushButton::clicked, this, &UserList::filter);
-}
-
-UserList::~UserList()
-{
-    std::cout << "called" << std::endl;
 }
 
 void UserList::addUser()
@@ -101,7 +109,8 @@ void UserList::addUser()
         user.userName = dialog.getUserName();
         user.firstName = dialog.getFirstName();
         user.lastName = dialog.getLastName();
-        user.preferdGame = dialog.getPreferdGames();
+        for (const auto& game : dialog.getPreferdGames())
+            user.preferdGame.insert(game, 0);
 
 
         auto dataModel = dynamic_cast<TableModel*>(m_tableModel);
@@ -111,7 +120,7 @@ void UserList::addUser()
             QMessageBox::critical(this, "Error Add a User", message);
             continue;
         }
-        emit userAdded(user.userName);
+        emit userAdded(user);
         break;
     }
 }
@@ -122,7 +131,7 @@ void UserList::removeUser()
     auto dataModel = static_cast<TableModel*>(m_tableModel);
     for (const QModelIndex &index : selectedIndexes) {
         QModelIndex parent = index.parent();
-        QVariant userName = m_tableModel->index(index.row(), 0 /*0 column is userName*/, parent).data();
+        QVariant userName = m_tableView->model()->index(index.row(), 0 /*0 column is userName*/, parent).data();
 
         if (!dataModel->removeUser(userName.toString()))
         {

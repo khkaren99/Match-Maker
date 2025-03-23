@@ -6,11 +6,11 @@
 TableModel::TableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    m_users.push_back({"user1", "first2", "last3", {"XO3", "XO4"}});
-    m_users.push_back({"user2", "first4", "last1", {"XO3", "XO5"}});
-    m_users.push_back({"user3", "first1", "last5", {"XO3", "XO4", "XO5"}});
-    m_users.push_back({"user4", "first5", "last2", {"XO4", "XO5"}});
-    m_users.push_back({"user5", "first3", "last4", {"XO5"}});
+    m_users.push_back({"user1", "first2", "last3", {{"XO3", 0},{"XO4", 0}}});
+    m_users.push_back({"user2", "first4", "last1", {{"XO4", 0},{"XO5", 0}}});
+    m_users.push_back({"user3", "first1", "last5", {{"XO3", 0},{"XO4", 0},{"XO5", 0}}});
+    m_users.push_back({"user4", "first5", "last2", {{"XO3", 0},{"XO5", 0}}});
+    m_users.push_back({"user5", "first3", "last4", {{"XO5", 0}}});
 }
 
 TableModel::~TableModel()
@@ -42,7 +42,12 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
         case 2:
             return QVariant(m_users[index.row()].lastName);
         case 3:
-            return QVariant(m_users[index.row()].preferdGame.join(", "));
+        {
+            QStringList games;
+            for (const auto& game : m_users[index.row()].preferdGame.keys())
+                games.push_back(game);
+            return QVariant(games.join(", "));
+        }
         }
     }
     return QVariant();
