@@ -12,7 +12,7 @@
 MainWindow::MainWindow()
 {
     setWindowTitle(tr("Matchmaking System"));
-//    resize(800, 600);
+    resize(800, 600);
 
     QSplitter *spliter = new QSplitter(this);
     m_dashboard = new Dashboard(spliter);
@@ -42,7 +42,11 @@ MainWindow::MainWindow()
     QAction *shUserList = new QAction(tr("Show/Hide User List"), this);
     viewMenu->addAction(shDashboard);
     viewMenu->addAction(shUserList);
-//    connect(shDashboard, &QAction::triggered, this, &function);
-//    connect(shUserList, &QAction::triggered, this, &function);
+    connect(shDashboard, &QAction::triggered, this, [&](){
+        m_dashboard->setVisible(!m_dashboard->isVisible());
+    });
+    connect(shUserList, &QAction::triggered, this, [&](){
+        m_userList->setVisible(!m_userList->isVisible());
+    });
     
 }

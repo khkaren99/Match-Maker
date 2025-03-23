@@ -73,6 +73,8 @@
         "qmessagebox": "cpp",
         "qabstracttablemodel": "cpp",
         "qsortfilterproxymodel": "cpp",
-        "qboxlayout": "cpp"
+        "qboxlayout": "cpp",
+        "qwidget": "cpp",
+        "qstringlist": "cpp"
     }
 }
