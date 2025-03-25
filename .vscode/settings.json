@@ -75,6 +75,16 @@
         "qsortfilterproxymodel": "cpp",
         "qboxlayout": "cpp",
         "qwidget": "cpp",
-        "qstringlist": "cpp"
+        "qstringlist": "cpp",
+        "qjsondocument": "cpp",
+        "qjsonarray": "cpp",
+        "qhash": "cpp",
+        "qlabel": "cpp",
+        "qgridlayout": "cpp",
+        "qhboxlayout": "cpp",
+        "qlineedit": "cpp",
+        "qpushbutton": "cpp",
+        "qtwidgets": "cpp",
+        "qmodelindex": "cpp"
     }
 }

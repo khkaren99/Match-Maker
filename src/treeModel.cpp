@@ -2,54 +2,53 @@
 #include <iostream>
 #include <memory>
 
-TreeModel::TreeModel(QObject *parent)
+TreeModel::TreeModel(const QStringList &_games, QObject *parent)
     : QAbstractItemModel(parent)
+    , games(_games)
 {
-    QVector<QString> games({"XO3", "XO4", "XO5"});
-    int i = 0;
     for (auto game : games)
     {
-        Node* node = new Node;
+        Node *node = new Node;
         node->data.push_back(game);
-        node->level = 1;
-        node->row = ++i;
-        {
-            Node* children = new Node;
-            children->data.push_back("");
-            children->data.push_back("user1");
-            children->data.push_back("3");
-            children->parent = node;
-            children->level = 2;
-            children->row = ++i;
-
-            node->children.push_back(children);
-            node->children.push_back(children);
-        }
-
         tree.push_back(node);
     }
 }
 
+// Didn't use smart pointer as QModelIndex use void* and
+// there is same == checking. Also don't sure for ownership.
+// Valgring is clean in almost all scenarios.
 TreeModel::~TreeModel()
 {
+    for (auto item : tree)
+    {
+        for (auto child : item->children)
+        {
+            delete child;
+        }
+        delete item;
+    }
 }
+
 QModelIndex TreeModel::index(int row, int column, const QModelIndex &index) const
 {
-    Node* node = static_cast<Node*>(index.internalPointer());
-    if (node && row < node->children.size() && column < node->children[row]->data.size())
+    Node *node = static_cast<Node *>(index.internalPointer());
+    if (node && row < node->children.size() &&
+        column < node->children[row]->data.size())
         return createIndex(row, column, node->children[row]);
-    
+
     if (!index.isValid() && row < tree.size() && column == 0)
         return createIndex(row, column, tree[row]);
-    
+
     return QModelIndex();
 }
 
 QModelIndex TreeModel::parent(const QModelIndex &child) const
 {
-    Node* node = static_cast<Node*>(child.internalPointer());
-    if (node && !tree.contains(node)) {
-        Node* parentNode = node->parent;
+    // Assumption: if the index don't contain pointer it's the root/(no parent).
+    Node *node = static_cast<Node *>(child.internalPointer());
+    if (node && !tree.contains(node))
+    {
+        Node *parentNode = node->parent;
         int row = tree.indexOf(parentNode);
         return createIndex(row, 0, parentNode);
     }
@@ -58,7 +57,7 @@ QModelIndex TreeModel::parent(const QModelIndex &child) const
 
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
-    Node* node = static_cast<Node*>(parent.internalPointer());
+    Node *node = static_cast<Node *>(parent.internalPointer());
     if (node)
         return node->children.size();
     return tree.size();
@@ -66,17 +65,18 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
-    Node* node = static_cast<Node*>(parent.internalPointer());
+    Node *node = static_cast<Node *>(parent.internalPointer());
     if (node)
         return node->data.size();
-    return 3;
+
+    return header.size();
 }
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
     if (index.isValid() && role == Qt::DisplayRole)
     {
-        Node* node = static_cast<Node*>(index.internalPointer());
+        Node *node = static_cast<Node *>(index.internalPointer());
         if (node->data.size() > index.column())
             return node->data[index.column()];
     }
@@ -85,16 +85,68 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    QVector<QString> header({"Game", "User", "Rating"});
     if (role == Qt::DisplayRole)
         return header[section];
     return QVariant();
 }
 
-bool TreeModel::hasChildren(const QModelIndex &parent) const
+// No time for general ideas, as tree structure is fixed
+TreeModel::DashboardData TreeModel::treeDump() const
 {
-    Node* node = static_cast<Node*>(parent.internalPointer());
-    if (parent.isValid() && node)
-        return !node->children.isEmpty();
-    return !tree.empty();
+    DashboardData data;
+
+    for (auto it : tree)
+    {
+        // We know the tree keeps game, no need iterate on it data.
+        // The game node has one data gameName.
+        QString name = it->data[0].toString();
+        data.insert(name, {});
+        for (auto child : it->children)
+        {
+            // The data[0] is empty string, no need to dump.
+            // The data[0] described in TreeModel::addUser().
+            data[name].push_back({child->data[1].toString(), child->data[2].toString()});
+        }
+    }
+
+    return data;
+}
+
+void TreeModel::addUser(const QString &userName, const QStringList &userGames)
+{
+    for (auto game : tree)
+    {
+        if (userGames.contains(game->data[0].toString()))
+        {
+            // For ease of processing, pass an empty string as the first argument.
+            // It was difficult to start the data from the second column.
+            Node *p = new Node;
+            p->data.push_back("");
+            p->data.push_back(userName);
+            p->data.push_back(0);
+            p->parent = game;
+
+            beginInsertRows(QModelIndex(), 0, 0);
+            game->children.append(p);
+            endInsertRows();
+        }
+    }
+}
+
+void TreeModel::removeUser(const QString &userName)
+{
+    for (auto game : tree)
+    {
+        for (auto user : game->children)
+        {
+            if (userName == user->data[1])
+            {
+                beginRemoveRows(QModelIndex(), 0, 0);
+                game->children.remove(game->children.indexOf(user));
+                endRemoveRows();
+                delete user;
+                break;
+            }
+        }
+    }
 }

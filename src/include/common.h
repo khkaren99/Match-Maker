@@ -1,12 +1,12 @@
 #pragma once
 
 #include <QString>
-#include <QHash>
+#include <QStringList>
 
 struct User
 {
     QString userName;
     QString firstName;
     QString lastName;
-    QHash<QString, unsigned int> preferdGame;
+    QStringList preferdGame;
 };

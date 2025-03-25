@@ -1,19 +1,29 @@
 #pragma once
 
+#include "common.h"
+#include "treeModel.h"
+
 #include <QWidget>
-#include <QAbstractItemModel>
 #include <QTreeView>
+#include <QStringList>
+#include <QAbstractItemModel>
 
 class Dashboard : public QWidget
 {
-    Q_OBJECT
 private:
-    QAbstractItemModel* m_treeModel;
+    using modeType = TreeModel;
+
+private:
+    QAbstractItemModel *m_treeModel;
     QTreeView *m_treeView;
 
 public:
-    Dashboard(QWidget *parent = nullptr);
-    ~Dashboard();
+    Dashboard(const QStringList &games, QWidget *parent = nullptr);
 
     void saveDashboard();
+    void addUser(User user);
+    void removeUser(const QString &userName);
+
+private:
+    void setupContextMenu();
 };

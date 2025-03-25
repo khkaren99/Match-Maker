@@ -1,32 +1,18 @@
 #include "tableModel.h"
 
-#include <QPixmap>
-#include <iostream>
-
 TableModel::TableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    m_users.push_back({"user1", "first2", "last3", {{"XO3", 0},{"XO4", 0}}});
-    m_users.push_back({"user2", "first4", "last1", {{"XO4", 0},{"XO5", 0}}});
-    m_users.push_back({"user3", "first1", "last5", {{"XO3", 0},{"XO4", 0},{"XO5", 0}}});
-    m_users.push_back({"user4", "first5", "last2", {{"XO3", 0},{"XO5", 0}}});
-    m_users.push_back({"user5", "first3", "last4", {{"XO5", 0}}});
 }
-
-TableModel::~TableModel()
-{}
 
 int TableModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
-    return m_users.size();//(parent.isValid() && parent.column() != 0) ? 0 : rc;
+    return m_users.size();
 }
 
 int TableModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
-    // {username, first name, last name, preferd game}
-    return 4;
+    return headers.size();
 }
 
 QVariant TableModel::data(const QModelIndex &index, int role) const
@@ -42,12 +28,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
         case 2:
             return QVariant(m_users[index.row()].lastName);
         case 3:
-        {
-            QStringList games;
-            for (const auto& game : m_users[index.row()].preferdGame.keys())
-                games.push_back(game);
-            return QVariant(games.join(", "));
-        }
+            return QVariant(m_users[index.row()].preferdGame.join(", "));
         }
     }
     return QVariant();
@@ -57,25 +38,28 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 {
     if (role != Qt::DisplayRole)
         return QVariant();
+
     if (orientation == Qt::Vertical)
         return QString::number(section);
-    // else if (orientation == Qt::Horizontal)
-    QStringList headers = {"Username", "First name", "Last name", "Preferd games"};
+
     return headers[section];
 }
 
-bool TableModel::addUser(const User& user)
+bool TableModel::addUser(const User &user)
 {
-    for (const auto& u : m_users)
+    // No double user name.
+    // Check does the userName exist.
+    for (const auto &u : m_users)
         if (u.userName == user.userName)
             return false;
+
     beginInsertRows(QModelIndex(), 0, 0);
-        m_users.push_back(user);
+    m_users.push_back(user);
     endInsertRows();
     return true;
 }
 
-bool TableModel::removeUser(const QString& userName)
+bool TableModel::removeUser(const QString &userName)
 {
     for (auto it = m_users.begin(); it != m_users.end(); ++it)
     {

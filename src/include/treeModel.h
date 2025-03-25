@@ -1,15 +1,25 @@
 #pragma once
 
-#include <QAbstractItemModel>
-#include <QModelIndex>
 #include <QVariant>
+#include <QModelIndex>
+#include <QAbstractItemModel>
 
 class TreeModel : public QAbstractItemModel
 {
-    Q_OBJECT
+private:
+    struct Node
+    {
+        Node *parent = nullptr;
+        QVector<Node *> children;
+        QVector<QVariant> data;
+    };
+
+    QVector<Node *> tree;
+    const QStringList &games;
+    QStringList header{"Game", "User", "Rating"};
 
 public:
-    explicit TreeModel(QObject *parent = nullptr);
+    explicit TreeModel(const QStringList &_games, QObject *parent = nullptr);
     ~TreeModel();
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
@@ -21,17 +31,18 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    bool hasChildren(const QModelIndex &parent) const override;
+    void addUser(const QString &userName, const QStringList &games);
+    void removeUser(const QString &userName);
 
+    // using another section as there is some specific usings
+    // gameName
+    //     |
+    //     +--- | UserName | raite |
+    // gameName maps to the vector of {username, rate} pairs.
 private:
-    struct Node
-    {
-        Node *parent = nullptr;
-        QVector<Node*> children;
-        QVector<QString> data;
-        int level = -1;
-        int row = -1;
-    };
+    using UserInfo = std::pair<QString, QString>;
+    using DashboardData = QHash<QString, QVector<UserInfo>>;
 
-    QVector<Node*> tree;
+public:
+    DashboardData treeDump() const;
 };

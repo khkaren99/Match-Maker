@@ -1,20 +1,14 @@
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QCheckBox>
-#include <QVector>
-#include <QString>
-#include <QStringList>
-
-#include "addUserDialog.h"
 #include "common.h"
+#include "addUserDialog.h"
 
-addUserDialog::addUserDialog(const QVector<QString>& games, QWidget *parent)
+#include <QLabel>
+#include <QGridLayout>
+#include <QPushButton>
+
+addUserDialog::addUserDialog(const QStringList &games, QWidget *parent)
     : QDialog(parent)
 {
-    setWindowTitle(tr("Add a User"));  
+    setWindowTitle(tr("Add a User"));
 
     QGridLayout *layout = new QGridLayout(this);
     layout->setSizeConstraint(QLayout::SetFixedSize);
@@ -56,7 +50,7 @@ addUserDialog::addUserDialog(const QVector<QString>& games, QWidget *parent)
     buttonLine->addWidget(cancelButton);
     buttonLine->addWidget(okButton);
     layout->addLayout(buttonLine, 4, 0, Qt::AlignRight);
-    
+
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
     connect(okButton, &QPushButton::clicked, this, &QDialog::accept);
 }
