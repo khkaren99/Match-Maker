@@ -34,15 +34,15 @@ addUserDialog::addUserDialog(const QStringList &games, QWidget *parent)
     lastNameLine->addWidget(lastNameEdit);
     layout->addLayout(lastNameLine, 2, 0);
 
-    QHBoxLayout *preferdGameLine = new QHBoxLayout(this);
-    QLabel *preferdGameLabel = new QLabel("Preferd game:", this);
-    preferdGameLine->addWidget(preferdGameLabel);
+    QHBoxLayout *preferredGameLine = new QHBoxLayout(this);
+    QLabel *preferredGameLabel = new QLabel("Preferred game:", this);
+    preferredGameLine->addWidget(preferredGameLabel);
     for (auto game : games)
     {
         gameCheckBoxes.push_back(new QCheckBox(game, this));
-        preferdGameLine->addWidget(gameCheckBoxes.back());
+        preferredGameLine->addWidget(gameCheckBoxes.back());
     }
-    layout->addLayout(preferdGameLine, 3, 0);
+    layout->addLayout(preferredGameLine, 3, 0);
 
     QHBoxLayout *buttonLine = new QHBoxLayout(this);
     QPushButton *cancelButton = new QPushButton("Cancel", this);
@@ -70,7 +70,7 @@ QString addUserDialog::getLastName() const
     return lastNameEdit->text();
 }
 
-QStringList addUserDialog::getPreferdGames() const
+QStringList addUserDialog::getPreferredGames() const
 {
     QStringList games;
     for (auto checkBox : gameCheckBoxes)

@@ -5,8 +5,11 @@
 
 struct User
 {
+    enum UserState {FREE, BUSY, WAITING};
+
     QString userName;
     QString firstName;
     QString lastName;
-    QStringList preferdGame;
+    QStringList preferredGame;
+    UserState state;
 };

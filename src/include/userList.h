@@ -25,10 +25,13 @@ public:
     void addUser();
     void removeUser();
 
+    void loadUser();
+
 private:
     void setupContextMenu();
     void filter();
     bool validateUser(const User &user);
+    bool addUser_direct(const User& user);
 
 signals:
     void userAdded(const User &user);

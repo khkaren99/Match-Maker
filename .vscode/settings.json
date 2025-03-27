@@ -85,6 +85,9 @@
         "qlineedit": "cpp",
         "qpushbutton": "cpp",
         "qtwidgets": "cpp",
-        "qmodelindex": "cpp"
+        "qmodelindex": "cpp",
+        "fstream": "cpp",
+        "cstring": "cpp",
+        "qapplication": "cpp"
     }
 }

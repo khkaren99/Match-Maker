@@ -1,10 +1,14 @@
 #include "userList.h"
 #include "addUserDialog.h"
 
+#include <fstream>
+#include <sstream>
+
 #include <QLabel>
 #include <QAction>
 #include <QMessageBox>
 #include <QVBoxLayout>
+#include <QFileDialog>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 
@@ -22,7 +26,7 @@ UserList::UserList(const QStringList &_games, QWidget *parent)
     // Set QSortFilterProxyModel for sorting and filtering.
     auto proxyModel = new QSortFilterProxyModel(m_tableModel);
     proxyModel->setSourceModel(m_tableModel);
-    proxyModel->setFilterRegularExpression(QRegularExpression(QString("^[A-Z].*"),
+    proxyModel->setFilterRegularExpression(QRegularExpression(QString("^[\\x20-\\x7E].*"),
                                                               QRegularExpression::CaseInsensitiveOption));
 
     m_tableView->setModel(proxyModel);
@@ -58,21 +62,10 @@ void UserList::addUser()
         user.userName = dialog.getUserName();
         user.firstName = dialog.getFirstName();
         user.lastName = dialog.getLastName();
-        user.preferdGame = dialog.getPreferdGames();
+        user.preferredGame = dialog.getPreferredGames();
 
-        if (!validateUser(user))
-            continue;
-
-        auto dataModel = static_cast<modeType *>(m_tableModel);
-        if (!dataModel->addUser(user))
-        {
-            QString message = "User " + user.userName + " already exists";
-            QMessageBox::critical(this, "Error Add a User", message);
-            continue;
-        }
-        // Send the signal for dashboard.
-        emit userAdded(user);
-        break;
+        if (addUser_direct(user))
+            break;
     }
 }
 
@@ -93,6 +86,31 @@ void UserList::removeUser()
         }
         // Send the signal for dashboard.
         emit userRemoved(userName.toString());
+    }
+}
+
+void UserList::loadUser()
+{
+    QString fileName = QFileDialog::getOpenFileName(this);
+    std::ifstream file(fileName.toStdString());
+    if (!file) {
+        qWarning("Couldn't open load file.");
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        User user;
+        std::string temp;
+        iss >> temp; user.userName = QString::fromStdString(temp);
+        iss >> temp; user.firstName = QString::fromStdString(temp);
+        iss >> temp; user.lastName = QString::fromStdString(temp);
+        while (iss >> temp) {
+            user.preferredGame.push_back(QString::fromStdString(temp));
+        }
+        if (!addUser_direct(user))
+            qWarning("Invalid user");
     }
 }
 
@@ -147,12 +165,29 @@ bool UserList::validateUser(const User &user)
         return false;
     }
 
-    QStringList preferdGames = user.preferdGame;
-    if (preferdGames.isEmpty())
+    QStringList preferredGames = user.preferredGame;
+    if (preferredGames.isEmpty())
     {
         reportError("You must select at least one game");
         return false;
     }
 
+    return true;
+}
+
+bool UserList::addUser_direct(const User& user)
+{
+    if (!validateUser(user))
+        return false;
+
+    auto dataModel = static_cast<modeType *>(m_tableModel);
+    if (!dataModel->addUser(user))
+    {
+        QString message = "User " + user.userName + " already exists";
+        QMessageBox::critical(this, "Error Add a User", message);
+        return false;
+    }
+    // Send the signal for dashboard.
+    emit userAdded(user);
     return true;
 }

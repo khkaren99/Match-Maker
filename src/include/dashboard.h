@@ -21,7 +21,7 @@ public:
     Dashboard(const QStringList &games, QWidget *parent = nullptr);
 
     void saveDashboard();
-    void addUser(User user);
+    void addUser(const User &user);
     void removeUser(const QString &userName);
 
 private:

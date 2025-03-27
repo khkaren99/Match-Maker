@@ -20,5 +20,5 @@ public:
     QString getUserName() const;
     QString getFirstName() const;
     QString getLastName() const;
-    QStringList getPreferdGames() const;
+    QStringList getPreferredGames() const;
 };

@@ -28,7 +28,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
         case 2:
             return QVariant(m_users[index.row()].lastName);
         case 3:
-            return QVariant(m_users[index.row()].preferdGame.join(", "));
+            return QVariant(m_users[index.row()].preferredGame.join(", "));
         }
     }
     return QVariant();

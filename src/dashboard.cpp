@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QAction>
 #include <QJsonArray>
+#include <QFileDialog>
 #include <QVBoxLayout>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -25,7 +26,8 @@ Dashboard::Dashboard(const QStringList &games, QWidget *parent)
 
 void Dashboard::saveDashboard()
 {
-    QFile saveFile(QStringLiteral("dashboard.json"));
+    QString fileName = QFileDialog::getSaveFileName(this);
+    QFile saveFile(fileName);
     if (!saveFile.open(QIODevice::WriteOnly))
     {
         qWarning("Couldn't open save file.");
@@ -50,9 +52,9 @@ void Dashboard::saveDashboard()
     saveFile.write(saveDoc.toJson());
 }
 
-void Dashboard::addUser(User user)
+void Dashboard::addUser(const User &user)
 {
-    static_cast<modeType *>(m_treeModel)->addUser(user.userName, user.preferdGame);
+    static_cast<modeType *>(m_treeModel)->addUser(user.userName, user.preferredGame);
 }
 
 void Dashboard::removeUser(const QString &userName)

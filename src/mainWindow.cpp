@@ -26,8 +26,11 @@ MainWindow::MainWindow()
 void MainWindow::setupMenu()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
+    QAction *loadUsersAct = new QAction(tr("Load users"), this);
     QAction *saveDashboardAct = new QAction(tr("Save the Dashboard to File"), this);
+    fileMenu->addAction(loadUsersAct);
     fileMenu->addAction(saveDashboardAct);
+    connect(loadUsersAct, &QAction::triggered, m_userList, &UserList::loadUser);
     connect(saveDashboardAct, &QAction::triggered, m_dashboard, &Dashboard::saveDashboard);
 
     QMenu *editMenu = menuBar()->addMenu(tr("Edit"));

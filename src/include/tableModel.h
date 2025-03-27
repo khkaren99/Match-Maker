@@ -9,7 +9,7 @@ class TableModel : public QAbstractTableModel
 {
 private:
     QVector<User> m_users;
-    QStringList headers{"Username", "First name", "Last name", "Preferd games"};
+    QStringList headers{"Username", "First name", "Last name", "Preferred games"};
 
 public:
     TableModel(QObject *parent = nullptr);
