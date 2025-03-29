@@ -32,7 +32,7 @@ void RockPaperScissors::play()
 			std::cout << "\tRound " << i+1 << ": draw" << std::endl;
 			continue;
 		}
-		if (u1_suit + 1 % SUIT.size() == u2_suit)
+		if ((u1_suit + 1) % SUIT.size() == u2_suit)
 		{
 			std::cout << "\tRound " << i+1 << " winner is Player 1" << std::endl;
 			++user1;

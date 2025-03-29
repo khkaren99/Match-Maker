@@ -34,7 +34,9 @@ private:
     void loadCache();
     void writeCache();
     void readDashboard(QString fileName);
-    void writeDashboard(QString fileName);
+    // games specify which games data should be wrien.The argument
+    // added to avoid code dupication. it's used in context menu.
+    void writeDashboard(QString fileName, const QStringList& games = {});
 
     void setupContextMenu();
 };

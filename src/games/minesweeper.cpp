@@ -75,7 +75,7 @@ void Minesweeper::printBoard(unsigned int printSpeed) const
 	// The means in board indicates like O
 	const std::vector<char> SYMBOLS{' ', 'F', 'S', 'O'};
 	std::string horizontal = "+";
-	for (int i = 0; i < board.size(); ++i) {
+	for (size_t i = 0; i < board.size(); ++i) {
         horizontal += "-+";
     }
 

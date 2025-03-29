@@ -1,6 +1,4 @@
 #include "treeModel.h"
-#include <iostream>
-#include <memory>
 
 TreeModel::TreeModel(const QStringList &_games, QObject *parent)
     : QAbstractItemModel(parent)

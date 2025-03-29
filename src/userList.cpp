@@ -87,15 +87,15 @@ void UserList::removeUser()
     // Iterate from back as in the second iteration's index is going invalid.
     for (auto index = selectedIndexes.rbegin(); index != selectedIndexes.rend(); ++index)
     {
-        QVariant userName = index->data();
-        if (!dataModel->removeUser(userName.toString()))
+        QString userName = index->data().toString();
+        if (!dataModel->removeUser(userName))
         {
-            QString message = "User " + userName.toString() + " doesn't exists";
+            QString message = "User " + userName + " doesn't exists";
             QMessageBox::critical(this, "Remove a User", message);
             continue;
         }
         // Send the signal for dashboard.
-        emit userRemoved(userName.toString());
+        emit userRemoved(userName);
     }
 }
 

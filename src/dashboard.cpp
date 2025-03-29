@@ -18,7 +18,7 @@ Dashboard::Dashboard(const QStringList &games, QWidget *parent)
 
     m_treeView->setModel(m_treeModel);
     m_treeView->setFocusPolicy(Qt::NoFocus);
-    m_treeView->setSelectionMode(QAbstractItemView::NoSelection);
+    m_treeView->setSelectionBehavior(QAbstractItemView::SelectItems);
 
     layout->addWidget(m_treeView, 0);
 
@@ -86,7 +86,7 @@ void Dashboard::readDashboard(QString fileName)
     }
 }
 
-void Dashboard::writeDashboard(QString fileName)
+void Dashboard::writeDashboard(QString fileName, const QStringList& games)
 {
     QFile saveFile(fileName);
     if (!saveFile.open(QIODevice::WriteOnly))
@@ -99,6 +99,10 @@ void Dashboard::writeDashboard(QString fileName)
     auto data = static_cast<modeType *>(m_treeModel)->treeDump();
     for (auto it = data.begin(); it != data.end(); ++it)
     {
+        // check does the game need to be saved
+        if (!games.isEmpty() && !games.contains(it.key()))
+            continue;
+
         QJsonArray usersInfo;
         for (auto user : it.value())
         {
@@ -118,7 +122,22 @@ void Dashboard::setupContextMenu()
 {
     auto addAction = new QAction("Save to file", this);
     connect(addAction, &QAction::triggered, [&](){
-        saveDashboard();
+        QModelIndexList selectedIndexes = m_treeView->selectionModel()->selectedRows();
+
+        auto dataModel = static_cast<modeType *>(m_treeModel);
+        QStringList writingGames;
+        for (auto index = selectedIndexes.rbegin(); index != selectedIndexes.rend(); ++index)
+        {
+            QString gameName = index->data().toString();
+            if (!gameName.isEmpty())
+                writingGames.push_back(gameName);
+        }
+        if (writingGames.isEmpty())
+            return;
+
+        QString fileName = QFileDialog::getSaveFileName(this);
+        if (!fileName.isEmpty())
+            writeDashboard(fileName, writingGames);
     });
     this->addAction(addAction);
 
