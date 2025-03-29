@@ -6,11 +6,14 @@
 
 #include <QLabel>
 #include <QAction>
+#include <QJsonArray>
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QPushButton>
 #include <QTextStream>
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <QSortFilterProxyModel>
 
 UserList::UserList(const QStringList &_games, QWidget *parent)
@@ -56,23 +59,7 @@ UserList::UserList(const QStringList &_games, QWidget *parent)
 
 UserList::~UserList()
 {
-    // write a user list into file
-    QString fileName = ".mathcMaker_userList";
-    QFile saveFile(fileName);
-    if (!saveFile.open(QIODevice::WriteOnly))
-    {
-        qWarning("Couldn't open save file.");
-        return;
-    }
-
-    auto data = static_cast<modeType*>(m_tableModel)->tableDump();
-    for (auto item : data)
-    {
-        QTextStream out(&saveFile);
-        out << item.toStringList().join(" ") << "\n";
-    }
-
-    saveFile.close();
+    writeCache();
 }
 
 void UserList::addUser()
@@ -112,42 +99,91 @@ void UserList::removeUser()
     }
 }
 
-void UserList::loadUser()
+void UserList::loadUserList()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
     if (QFile::exists(fileName))
-        loadUser(fileName);
+        readUserList(fileName);
 }
 
-void UserList::loadUser(QString fileName)
+void UserList::saveUserList()
 {
-    std::ifstream file(fileName.toStdString());
-    if (!file) {
-        qWarning("Couldn't open load file.");
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        User user;
-        std::string temp;
-        iss >> temp; user.userName = QString::fromStdString(temp);
-        iss >> temp; user.firstName = QString::fromStdString(temp);
-        iss >> temp; user.lastName = QString::fromStdString(temp);
-        while (iss >> temp) {
-            user.preferredGame.push_back(QString::fromStdString(temp));
-        }
-        if (!addUser_direct(user))
-            qWarning("Invalid user");
-    }
+    QString fileName = QFileDialog::getSaveFileName(this);
+    if (!fileName.isEmpty())
+        writeUserList(fileName);
 }
 
 void UserList::loadCache()
 {
     QString fileName = ".mathcMaker_userList";
     if (QFile::exists(fileName))
-        loadUser(fileName);
+        readUserList(fileName);
+}
+
+void UserList::writeCache()
+{
+    QString fileName = ".mathcMaker_userList";
+    writeUserList(fileName);
+}
+
+void UserList::readUserList(QString fileName)
+{
+    QFile loadFile(fileName);
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        qWarning("Couldn't open load file.");
+    }
+
+    QByteArray fileData = loadFile.readAll();
+    loadFile.close();
+
+    QJsonDocument loadDoc(QJsonDocument::fromJson(fileData));
+    QJsonArray userListData = loadDoc.array();
+
+    for (auto it = userListData.begin(); it != userListData.end(); ++it)
+    {
+        QJsonObject userInfo = it->toObject();
+        User user;
+        user.userName = userInfo["userName"].toString();
+        user.firstName = userInfo["firstName"].toString();
+        user.lastName = userInfo["lastName"].toString();
+
+        for (auto game : userInfo["preferredGame"].toArray())
+            user.preferredGame.push_back(game.toString());
+        
+        if (!addUser_direct(user))
+            qWarning("Invalid user");
+    }
+}
+
+void UserList::writeUserList(QString fileName)
+{
+    // write a user list into file
+    QFile saveFile(fileName);
+    if (!saveFile.open(QIODevice::WriteOnly))
+    {
+        qWarning("Couldn't open save file.");
+        return;
+    }
+
+    QJsonArray userListData;
+    auto data = static_cast<modeType*>(m_tableModel)->tableDump();
+    for (auto item : data)
+    {
+        QJsonObject userInfo;
+        userInfo["userName"] = item.toStringList()[0];
+        userInfo["firstName"] = item.toStringList()[1];
+        userInfo["lastName"] = item.toStringList()[2];
+        QJsonArray userGames;
+        for (auto game : item.toStringList()[3].split(' '))
+            userGames.append(game);
+        userInfo["preferredGame"] = userGames;
+
+        userListData.append(userInfo);
+    }
+    QJsonDocument saveDoc(userListData);
+    saveFile.write(saveDoc.toJson());
+    
+    saveFile.close();
 }
 
 void UserList::setupContextMenu()

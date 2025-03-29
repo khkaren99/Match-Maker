@@ -15,7 +15,7 @@ private:
     };
 
     QVector<Node *> tree;
-    const QStringList &games;
+    const QStringList games;
     QStringList header{"Game", "User", "Rating"};
 
 public:
@@ -32,6 +32,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
     void addUser(const QString &userName, const QStringList &games);
+    void addUser(const QString &userName, const QString &game, const QString& rate);
     void removeUser(const QString &userName);
 
     // using another section as there is some specific usings
@@ -40,7 +41,7 @@ public:
     //     +--- | UserName | raite |
     // gameName maps to the vector of {username, rate} pairs.
 private:
-    using UserInfo = std::pair<QString, QString>;
+    using UserInfo = QPair<QString, QString>;
     using DashboardData = QHash<QString, QVector<UserInfo>>;
 
 public:

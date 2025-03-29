@@ -90,6 +90,7 @@
         "cstring": "cpp",
         "qapplication": "cpp",
         "qvboxlayout": "cpp",
-        "qtreeview": "cpp"
+        "qtreeview": "cpp",
+        "qjsonobject": "cpp"
     }
 }

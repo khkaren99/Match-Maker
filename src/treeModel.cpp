@@ -77,6 +77,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     if (index.isValid() && role == Qt::DisplayRole)
     {
         Node *node = static_cast<Node *>(index.internalPointer());
+        // if data.size() == 1 only for root.
         if (node->data.size() > index.column())
             return node->data[index.column()];
     }
@@ -90,32 +91,16 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
     return QVariant();
 }
 
-// No time for general ideas, as tree structure is fixed
-TreeModel::DashboardData TreeModel::treeDump() const
-{
-    DashboardData data;
-
-    for (auto it : tree)
-    {
-        // We know the tree keeps game, no need iterate on it data.
-        // The game node has one data gameName.
-        QString name = it->data[0].toString();
-        data.insert(name, {});
-        for (auto child : it->children)
-        {
-            // The data[0] is empty string, no need to dump.
-            // The data[0] described in TreeModel::addUser().
-            data[name].push_back({child->data[1].toString(), child->data[2].toString()});
-        }
-    }
-
-    return data;
-}
-
 void TreeModel::addUser(const QString &userName, const QStringList &userGames)
 {
     for (auto game : tree)
     {
+        // Check the user didn't add
+        for (auto child : game->children)
+        {
+            if (child->data[1] == userName)
+                return;
+        }
         if (userGames.contains(game->data[0].toString()))
         {
             // For ease of processing, pass an empty string as the first argument.
@@ -149,4 +134,49 @@ void TreeModel::removeUser(const QString &userName)
             }
         }
     }
+}
+
+void TreeModel::addUser(const QString &userName, const QString &game, const QString& rate)
+{
+    // get game tree
+    int gameIndex = games.indexOf(game);
+    // make sure game tree didn't contain the user
+    for (auto child : tree[gameIndex]->children)
+    {
+        if (child->data[2] == userName)
+            return;
+    }
+
+    // add user in game
+    Node *p = new Node;
+    p->data.push_back("");
+    p->data.push_back(userName);
+    p->data.push_back(rate);
+    p->parent = tree[gameIndex];
+
+    beginInsertRows(QModelIndex(), 0, 0);
+    tree[gameIndex]->children.append(p);
+    endInsertRows();
+}
+
+// No time for general ideas, as tree structure is fixed
+TreeModel::DashboardData TreeModel::treeDump() const
+{
+    DashboardData data;
+
+    for (auto it : tree)
+    {
+        // We know the tree keeps game, no need iterate on it data.
+        // The game node has one data gameName.
+        QString name = it->data[0].toString();
+        data.insert(name, {});
+        for (auto child : it->children)
+        {
+            // The data[0] is empty string, no need to dump.
+            // The data[0] described in TreeModel::addUser().
+            data[name].push_back({child->data[1].toString(), child->data[2].toString()});
+        }
+    }
+
+    return data;
 }

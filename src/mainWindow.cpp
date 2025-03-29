@@ -4,7 +4,7 @@
 
 #include <QMenuBar>
 
-QStringList games = {"XO3", "Minesweeper", "RPS"};
+QStringList games = {"XO3", "RPS", "Minesweeper"};
 
 MainWindow::MainWindow()
     : m_dashboard(new Dashboard(games, this))
@@ -27,12 +27,13 @@ void MainWindow::setupMenu()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
     QAction *loadUsersAct = new QAction(tr("Load users"), this);
+    QAction *saveUsersAct = new QAction(tr("Save users"), this);
     QAction *saveDashboardAct = new QAction(tr("Save the Dashboard to File"), this);
     fileMenu->addAction(loadUsersAct);
+    fileMenu->addAction(saveUsersAct);
     fileMenu->addAction(saveDashboardAct);
-    connect(loadUsersAct, &QAction::triggered, [&](){
-        m_userList->loadUser();
-    });
+    connect(loadUsersAct, &QAction::triggered, m_userList, &UserList::loadUserList);
+    connect(saveUsersAct, &QAction::triggered, m_userList, &UserList::saveUserList);
     connect(saveDashboardAct, &QAction::triggered, m_dashboard, &Dashboard::saveDashboard);
 
     QMenu *editMenu = menuBar()->addMenu(tr("Edit"));

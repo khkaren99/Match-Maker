@@ -26,11 +26,15 @@ public:
     void addUser();
     void removeUser();
 
-    void loadUser();
+    void loadUserList();
+    void saveUserList();
     
 private:
-    void loadUser(QString fileName);
     void loadCache(); 
+    void writeCache();
+    void readUserList(QString fileName);
+    void writeUserList(QString fileName);
+
     void setupContextMenu();
     void filter();
     bool validateUser(const User &user);
