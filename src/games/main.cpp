@@ -1,5 +1,7 @@
 #include "game.h"
 #include "XO3.h"
+#include "rps.h"
+#include "minesweeper.h"
 
 #include <iostream>
 #include <cstring>
@@ -12,20 +14,41 @@ int main(int argc, char **argv)
 	{
 		std::cerr << "Error: could define username" << std::endl;
 		std::cerr << "Usage: gameName userName_1 userName_2" << std::endl;
+		std::cerr << "Available games: XO3 | RPS | Minesweeper" << std::endl;
 		return 0;
 	}
 
 	std::unique_ptr<Game> game;
-	if (strcmp(argv[1], "XO3") == 0)
-	{
+	if (strcmp(argv[1], "XO3") == 0){
 		game.reset(new XO3);
+	} else if (strcmp(argv[1], "RPS") == 0){
+		game.reset(new RockPaperScissors);
+	} else if (strcmp(argv[1], "Minesweeper") == 0) {
+		game.reset(new Minesweeper);
+	} else {
+		std::cerr << "The game \"" << argv[1] << "\" not found" << std::endl;
+		return 1;
 	}
 
 	std::cout << "User \"" << argv[2] << "\" and user \"" << argv[3] << "\" start the game." << std::endl;
 	game->play();
-	std::cout << game->getWinner() << std::endl;
-	return 0;
 
-//	printBoard(board, 0);
-//	gameImitation(board);
+	int winner = game->getWinner();
+	switch (winner)
+	{
+	case 0:
+		std::cout << "It's a draw." << std::endl;
+		break;
+	case 1:
+		std::cout << "Winner is: " << argv[2] << std::endl;
+		break;
+	case 2:
+		std::cout << "Winner is: " << argv[3] << std::endl;
+		break;
+	default:
+		std::cerr << "Missing winner" << std::endl;
+		break;
+	}
+
+	return 0;
 }

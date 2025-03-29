@@ -5,6 +5,7 @@
 */
 
 #include "XO3.h"
+#include "helper.h"
 
 #include <iostream>
 #include <time.h>
@@ -12,33 +13,27 @@
 #include <thread>
 #include <chrono>
 
-void clean(unsigned int nLine)
-{
-	std::cout << "\033[" << nLine << "A"; // Move cursor up n lines
-
-    for (int i = 0; i < nLine; ++i) {
-        std::cout << "\033[K"; // Clear the current line
-    }
-}
-
 void XO3::play()
 {
 	srand(time(NULL));
+	size_t size = board.size();
 
 	printBoard();
-	for (int i = 0; i < SIZE*SIZE && checkWinner() == 0; ++i)
+	// Start
+	for (size_t i = 0; i < size*size && checkWinner() == 0; ++i)
 	{
 		while (true)
 		{
-			int row = rand() % SIZE;
-			int column = rand() % SIZE;
+			size_t row = rand() % size;
+			size_t column = rand() % size;
+			// looking random chosen empty block
 			if (board[row][column] != 0)
 				continue;
 			board[row][column] = i % 2 + 1;
 			break;
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		clean(SIZE*2+1);
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		clean(size*2+1);
 		printBoard();
 	}
 }
@@ -51,12 +46,12 @@ int XO3::getWinner() const
 int XO3::checkWinner() const
 {
 	size_t n = board.size();
-	// Check horizontal and vertical lines.
+	// Check horizontal and vertical lines muching
 	for (size_t i = 0; i < n; ++i)
 	{
 		int row = 0;
 		int col = 0;
-		for (int j = 1; j < board[i].size(); ++j)
+		for (size_t j = 1; j < board[i].size(); ++j)
 		{
 			row += (board[i][j] == board[i][j - 1]);
 			col += (board[j][i] == board[j - 1][i]);
@@ -66,6 +61,7 @@ int XO3::checkWinner() const
 			return board[i][i];
 		}
 	}
+	// Check diagonal muching
 	int lubr = 0; // left-up to button-right
 	int lbur = 0; // left-button to right-up
 	for (size_t i = 1; i < n; ++i)
@@ -82,11 +78,12 @@ int XO3::checkWinner() const
 
 void XO3::printBoard(unsigned int printSpeed) const
 {
-	for (int i = 0; i < board.size(); ++i)
+	const std::vector<char> SYMBOLS{' ', 'X', 'O'};
+	for (size_t i = 0; i < board.size(); ++i)
 	{
 		std::cout << "+-+-+-+" << std::endl;
 		std::cout << "|";
-		for (int j = 0; j < board[i].size(); ++j)
+		for (size_t j = 0; j < board[i].size(); ++j)
 		{
 			std::cout << SYMBOLS[board[i][j]] << "|";
 			std::cout.flush();

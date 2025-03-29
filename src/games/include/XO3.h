@@ -7,12 +7,12 @@ Tic Tac Toe Game
 
 #include <vector>
 
-using Matrix = std::vector<std::vector<int>>;
-constexpr int SIZE = 3;
-const std::vector<char> SYMBOLS{' ', 'X', 'O'};
-
 class XO3 : public Game
 {
+public:
+	using Matrix = std::vector<std::vector<int>>;
+
+private:
 	Matrix board;
 
 public:

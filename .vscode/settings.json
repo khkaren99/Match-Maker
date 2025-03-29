@@ -88,6 +88,8 @@
         "qmodelindex": "cpp",
         "fstream": "cpp",
         "cstring": "cpp",
-        "qapplication": "cpp"
+        "qapplication": "cpp",
+        "qvboxlayout": "cpp",
+        "qtreeview": "cpp"
     }
 }

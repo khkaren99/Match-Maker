@@ -4,7 +4,7 @@
 
 #include <QMenuBar>
 
-QStringList games = {"XO3", "XO4", "XO5"};
+QStringList games = {"XO3", "Minesweeper", "RPS"};
 
 MainWindow::MainWindow()
     : m_dashboard(new Dashboard(games, this))
