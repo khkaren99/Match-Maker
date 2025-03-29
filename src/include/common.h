@@ -11,5 +11,5 @@ struct User
     QString firstName;
     QString lastName;
     QStringList preferredGame;
-    UserState state;
+    UserState state = FREE;
 };

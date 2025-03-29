@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QTextStream>
 #include <QSortFilterProxyModel>
 
 UserList::UserList(const QStringList &_games, QWidget *parent)
@@ -50,6 +51,28 @@ UserList::UserList(const QStringList &_games, QWidget *parent)
     layout->addLayout(filterLine, 1);
 
     setupContextMenu();
+    loadCache();
+}
+
+UserList::~UserList()
+{
+    // write a user list into file
+    QString fileName = ".mathcMaker_userList";
+    QFile saveFile(fileName);
+    if (!saveFile.open(QIODevice::WriteOnly))
+    {
+        qWarning("Couldn't open save file.");
+        return;
+    }
+
+    auto data = static_cast<modeType*>(m_tableModel)->tableDump();
+    for (auto item : data)
+    {
+        QTextStream out(&saveFile);
+        out << item.toStringList().join(" ") << "\n";
+    }
+
+    saveFile.close();
 }
 
 void UserList::addUser()
@@ -92,6 +115,12 @@ void UserList::removeUser()
 void UserList::loadUser()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
+    if (QFile::exists(fileName))
+        loadUser(fileName);
+}
+
+void UserList::loadUser(QString fileName)
+{
     std::ifstream file(fileName.toStdString());
     if (!file) {
         qWarning("Couldn't open load file.");
@@ -112,6 +141,13 @@ void UserList::loadUser()
         if (!addUser_direct(user))
             qWarning("Invalid user");
     }
+}
+
+void UserList::loadCache()
+{
+    QString fileName = ".mathcMaker_userList";
+    if (QFile::exists(fileName))
+        loadUser(fileName);
 }
 
 void UserList::setupContextMenu()

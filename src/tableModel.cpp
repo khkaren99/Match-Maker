@@ -73,3 +73,18 @@ bool TableModel::removeUser(const QString &userName)
     }
     return false;
 }
+
+QVector<QVariant> TableModel::tableDump()
+{
+    QVector<QVariant> ret;
+    for (auto user : m_users)
+    {
+        ret.push_back(QVariant(QStringList{
+            user.userName,
+            user.firstName,
+            user.lastName,
+            user.preferredGame.join(" ")
+        }));
+    }
+    return ret;
+}

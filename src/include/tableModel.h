@@ -23,6 +23,8 @@ public:
     bool addUser(const User &user);
     bool removeUser(const QString &userName);
 
+    QVector<QVariant> tableDump();
+
 private:
     bool checkUser(const User &user);
 };

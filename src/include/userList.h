@@ -21,13 +21,16 @@ private:
 
 public:
     UserList(const QStringList &_games, QWidget *parent = nullptr);
+    ~UserList();
 
     void addUser();
     void removeUser();
 
     void loadUser();
-
+    
 private:
+    void loadUser(QString fileName);
+    void loadCache(); 
     void setupContextMenu();
     void filter();
     bool validateUser(const User &user);
