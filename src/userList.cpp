@@ -1,9 +1,6 @@
 #include "userList.h"
 #include "addUserDialog.h"
 
-#include <fstream>
-#include <sstream>
-
 #include <QLabel>
 #include <QAction>
 #include <QJsonArray>
@@ -11,16 +8,12 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QPushButton>
-#include <QTextStream>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QSortFilterProxyModel>
 
-UserList::UserList(const QStringList &_games, QWidget *parent)
-    : QWidget(parent)
-    , m_tableModel(new modeType(this))
-    , m_tableView(new QTableView(this))
-    , games(_games)
+UserList::UserList(DataManager *data, QWidget *parent)
+    : QWidget(parent), m_users(data), m_tableView(new QTableView(this))
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -28,6 +21,7 @@ UserList::UserList(const QStringList &_games, QWidget *parent)
 
     // Creating tabel model and tabel view.
     // Set QSortFilterProxyModel for sorting and filtering.
+    QAbstractTableModel *m_tableModel = new modeType(m_users, this);
     auto proxyModel = new QSortFilterProxyModel(m_tableModel);
     proxyModel->setSourceModel(m_tableModel);
     proxyModel->setFilterRegularExpression(QRegularExpression(QString("^[\\x20-\\x7E].*"),
@@ -42,10 +36,10 @@ UserList::UserList(const QStringList &_games, QWidget *parent)
     // Setup Filter line
     QHBoxLayout *filterLine = new QHBoxLayout(layout->widget());
     QLabel *filterNameLabel = new QLabel("UserName filter:", filterLine->widget());
-    filterNameEdit = new QLineEdit(filterLine->widget());
+    m_filterNameEdit = new QLineEdit(filterLine->widget());
     QPushButton *filterButton = new QPushButton("filter", filterLine->widget());
     filterLine->addWidget(filterNameLabel);
-    filterLine->addWidget(filterNameEdit);
+    filterLine->addWidget(m_filterNameEdit);
     filterLine->addWidget(filterButton);
     connect(filterButton, &QPushButton::clicked, this, &UserList::filter);
 
@@ -54,48 +48,30 @@ UserList::UserList(const QStringList &_games, QWidget *parent)
     layout->addLayout(filterLine, 1);
 
     setupContextMenu();
-    loadCache();
-}
-
-UserList::~UserList()
-{
-    writeCache();
 }
 
 void UserList::addUser()
 {
-    addUserDialog dialog(games);
-    // If the imput data is invalid ask to correct it.
-    while (dialog.exec())
-    {
-        User user;
-        user.userName = dialog.getUserName();
-        user.firstName = dialog.getFirstName();
-        user.lastName = dialog.getLastName();
-        user.preferredGame = dialog.getPreferredGames();
-
-        if (addUser_direct(user))
-            break;
-    }
+    addUserDialog::addUser(m_users);
 }
 
 void UserList::removeUser()
 {
     // For remove need to be selected at least one row.
     QModelIndexList selectedIndexes = m_tableView->selectionModel()->selectedRows();
-    auto dataModel = static_cast<modeType *>(m_tableModel);
-    // Iterate from back as in the second iteration's index is going invalid.
-    for (auto index = selectedIndexes.rbegin(); index != selectedIndexes.rend(); ++index)
+    QStringList userNames;
+    for (auto index = selectedIndexes.begin(); index != selectedIndexes.end(); ++index)
     {
-        QString userName = index->data().toString();
-        if (!dataModel->removeUser(userName))
+        userNames.append(index->data().toString());
+    }
+    for (auto user : userNames)
+    {
+        if (!m_users->removeUser(user))
         {
-            QString message = "User " + userName + " doesn't exists";
+            QString message = "User " + user + " doesn't exists";
             QMessageBox::critical(this, "Remove a User", message);
             continue;
         }
-        // Send the signal for dashboard.
-        emit userRemoved(userName);
     }
 }
 
@@ -113,23 +89,11 @@ void UserList::saveUserList()
         writeUserList(fileName);
 }
 
-void UserList::loadCache()
-{
-    QString fileName = ".mathcMaker_userList";
-    if (QFile::exists(fileName))
-        readUserList(fileName);
-}
-
-void UserList::writeCache()
-{
-    QString fileName = ".mathcMaker_userList";
-    writeUserList(fileName);
-}
-
 void UserList::readUserList(QString fileName)
 {
     QFile loadFile(fileName);
-    if (!loadFile.open(QIODevice::ReadOnly)) {
+    if (!loadFile.open(QIODevice::ReadOnly))
+    {
         qWarning("Couldn't open load file.");
     }
 
@@ -148,9 +112,12 @@ void UserList::readUserList(QString fileName)
         user.lastName = userInfo["lastName"].toString();
 
         for (auto game : userInfo["preferredGame"].toArray())
-            user.preferredGame.push_back(game.toString());
-        
-        if (!addUser_direct(user))
+        {
+            QJsonObject gameInfo = game.toObject();
+            user.preferredGame.insert(gameInfo["gameName"].toString(), gameInfo["gameRate"].toInt());
+        }
+
+        if (!m_users->addUser(user))
             qWarning("Invalid user");
     }
 }
@@ -166,23 +133,27 @@ void UserList::writeUserList(QString fileName)
     }
 
     QJsonArray userListData;
-    auto data = static_cast<modeType*>(m_tableModel)->tableDump();
-    for (auto item : data)
+    auto data = m_users->getUsers();
+    for (auto user : data)
     {
         QJsonObject userInfo;
-        userInfo["userName"] = item.toStringList()[0];
-        userInfo["firstName"] = item.toStringList()[1];
-        userInfo["lastName"] = item.toStringList()[2];
+        userInfo["userName"] = user.userName;
+        userInfo["firstName"] = user.firstName;
+        userInfo["lastName"] = user.lastName;
         QJsonArray userGames;
-        for (auto game : item.toStringList()[3].split(' '))
-            userGames.append(game);
+        for (auto it = user.preferredGame.begin(); it != user.preferredGame.end(); ++it)
+        {
+            QJsonObject gameInfo;
+            gameInfo["gameName"] = it.key();
+            gameInfo["gameRate"] = it.value();
+            userGames.append(gameInfo);
+        }
         userInfo["preferredGame"] = userGames;
 
         userListData.append(userInfo);
     }
     QJsonDocument saveDoc(userListData);
     saveFile.write(saveDoc.toJson());
-    
     saveFile.close();
 }
 
@@ -203,63 +174,6 @@ void UserList::filter()
 {
     auto proxyModel = static_cast<QSortFilterProxyModel *>(m_tableView->model());
 
-    proxyModel->setFilterRegularExpression(QRegularExpression(filterNameEdit->text(),
+    proxyModel->setFilterRegularExpression(QRegularExpression(m_filterNameEdit->text(),
                                                               QRegularExpression::CaseInsensitiveOption));
-}
-
-bool UserList::validateUser(const User &user)
-{
-    auto reportError = [&](const QString &message)
-    {
-        QMessageBox::critical(this, "Error Add a User", message);
-    };
-
-    QString userName = user.userName;
-    if (userName.isEmpty() || userName.size() > 16 || userName.contains(" "))
-    {
-        reportError("Username must be between 1 and 16 characters and don't contain invisible characters");
-        return false;
-    }
-
-    QString firstName = user.firstName;
-    if (firstName.isEmpty() || !firstName.contains(QRegularExpression("^[A-Z]")) ||
-        !firstName.contains(QRegularExpression("^[A-Za-z]+$")))
-    {
-        reportError("First name must consist of Latin characters only and starts with a capital letter.");
-        return false;
-    }
-
-    QString lastName = user.lastName;
-    if (lastName.isEmpty() || !lastName.contains(QRegularExpression("^[A-Z]")) ||
-        !lastName.contains(QRegularExpression(R"(^[A-Za-z]+('?[A-Za-z]+)*$)")))
-    {
-        reportError("Last name must consist of Latin characters only and starts with a capital letter.");
-        return false;
-    }
-
-    QStringList preferredGames = user.preferredGame;
-    if (preferredGames.isEmpty())
-    {
-        reportError("You must select at least one game");
-        return false;
-    }
-
-    return true;
-}
-
-bool UserList::addUser_direct(const User& user)
-{
-    if (!validateUser(user))
-        return false;
-
-    auto dataModel = static_cast<modeType *>(m_tableModel);
-    if (!dataModel->addUser(user))
-    {
-        QString message = "User " + user.userName + " already exists";
-        QMessageBox::critical(this, "Error Add a User", message);
-        return false;
-    }
-    // Send the signal for dashboard.
-    emit userAdded(user);
-    return true;
 }

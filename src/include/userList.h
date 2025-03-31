@@ -1,8 +1,7 @@
 #pragma once
 
-#include "common.h"
+#include "user.h"
 #include "tableModel.h"
-#include "addUserDialog.h"
 
 #include <QTableView>
 
@@ -14,33 +13,23 @@ private:
     using modeType = TableModel;
 
 private:
-    QAbstractTableModel *m_tableModel;
-    QLineEdit *filterNameEdit;
+    DataManager *m_users;
     QTableView *m_tableView;
-    QStringList games;
+    QLineEdit *m_filterNameEdit;
 
 public:
-    UserList(const QStringList &_games, QWidget *parent = nullptr);
-    ~UserList();
+    UserList(DataManager *data, QWidget *parent = nullptr);
 
     void addUser();
     void removeUser();
 
     void loadUserList();
     void saveUserList();
-    
+
 private:
-    void loadCache(); 
-    void writeCache();
     void readUserList(QString fileName);
     void writeUserList(QString fileName);
 
     void setupContextMenu();
     void filter();
-    bool validateUser(const User &user);
-    bool addUser_direct(const User& user);
-
-signals:
-    void userAdded(const User &user);
-    void userRemoved(const QString &userName);
 };

@@ -1,13 +1,22 @@
 #include "tableModel.h"
 
-TableModel::TableModel(QObject *parent)
-    : QAbstractTableModel(parent)
+TableModel::TableModel(DataManager *users, QObject *parent)
+    : QAbstractTableModel(parent), m_users(users)
 {
+    // Connecttion to data updates
+    connect(m_users, &DataManager::userAdded, [&](const User &)
+            {
+            beginResetModel();
+            endResetModel(); });
+    connect(m_users, &DataManager::userRemoved, [&](const QString &)
+            {
+            beginResetModel();
+            endResetModel(); });
 }
 
 int TableModel::rowCount(const QModelIndex &parent) const
 {
-    return m_users.size();
+    return m_users->usersCount();
 }
 
 int TableModel::columnCount(const QModelIndex &parent) const
@@ -19,16 +28,17 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 {
     if (index.isValid() && role == Qt::DisplayRole)
     {
+        auto users = m_users->getUsers();
         switch (index.column())
         {
         case 0:
-            return QVariant(m_users[index.row()].userName);
+            return QVariant(users[index.row()].userName);
         case 1:
-            return QVariant(m_users[index.row()].firstName);
+            return QVariant(users[index.row()].firstName);
         case 2:
-            return QVariant(m_users[index.row()].lastName);
+            return QVariant(users[index.row()].lastName);
         case 3:
-            return QVariant(m_users[index.row()].preferredGame.join(", "));
+            return QVariant(users[index.row()].preferredGame.keys().join(", "));
         }
     }
     return QVariant();
@@ -43,48 +53,4 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
         return QString::number(section);
 
     return headers[section];
-}
-
-bool TableModel::addUser(const User &user)
-{
-    // No double user name.
-    // Check does the userName exist.
-    for (const auto &u : m_users)
-        if (u.userName == user.userName)
-            return false;
-
-    beginInsertRows(QModelIndex(), 0, 0);
-    m_users.push_back(user);
-    endInsertRows();
-    return true;
-}
-
-bool TableModel::removeUser(const QString &userName)
-{
-    for (auto it = m_users.begin(); it != m_users.end(); ++it)
-    {
-        if (it->userName == userName)
-        {
-            beginRemoveRows(QModelIndex(), 0, 0);
-            m_users.erase(it);
-            endRemoveRows();
-            return true;
-        }
-    }
-    return false;
-}
-
-QVector<QVariant> TableModel::tableDump()
-{
-    QVector<QVariant> ret;
-    for (auto user : m_users)
-    {
-        ret.push_back(QVariant(QStringList{
-            user.userName,
-            user.firstName,
-            user.lastName,
-            user.preferredGame.join(" ")
-        }));
-    }
-    return ret;
 }

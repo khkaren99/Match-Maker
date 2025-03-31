@@ -1,12 +1,12 @@
 #pragma once
 
-#include "common.h"
+#include "user.h"
 #include "treeModel.h"
+#include "dataManager.h"
 
 #include <QWidget>
 #include <QTreeView>
 #include <QStringList>
-#include <QAbstractItemModel>
 
 class Dashboard : public QWidget
 {
@@ -14,29 +14,18 @@ private:
     using modeType = TreeModel;
 
 private:
-    QAbstractItemModel *m_treeModel;
+    DataManager *data;
     QTreeView *m_treeView;
 
 public:
-    Dashboard(const QStringList &games, QWidget *parent = nullptr);
-    ~Dashboard();
-
+    Dashboard(DataManager *data, QWidget *parent = nullptr);
 
     void saveDashboard();
-    void addUser(const User &user);
-    void removeUser(const QString &userName);
 
 private:
-    // TODO: need to syncronize data with userList to avoid
-    //       userName in games tree who not in user list
-    //       after can add loadDashboard from custom file.
-    //       Now reading as cache file created from valid data
-    void loadCache();
-    void writeCache();
-    void readDashboard(QString fileName);
-    // games specify which games data should be wrien.The argument
-    // added to avoid code dupication. it's used in context menu.
-    void writeDashboard(QString fileName, const QStringList& games = {});
+    // games specify which games data should be writen.The argument
+    // added to avoid code dupication.
+    void writeDashboard(QString fileName, const QStringList &games = {});
 
     void setupContextMenu();
 };

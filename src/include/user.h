@@ -1,15 +1,20 @@
 #pragma once
 
 #include <QString>
-#include <QStringList>
+#include <QHash>
 
 struct User
 {
-    enum UserState {FREE, BUSY, WAITING};
+    enum UserState
+    {
+        FREE,
+        BUSY,
+        WAITING
+    };
 
     QString userName;
     QString firstName;
     QString lastName;
-    QStringList preferredGame;
+    QHash<QString, int> preferredGame;
     UserState state = FREE;
 };

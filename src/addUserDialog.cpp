@@ -1,9 +1,11 @@
-#include "common.h"
+#include "user.h"
 #include "addUserDialog.h"
 
 #include <QLabel>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QMessageBox>
+#include <QRegularExpression>
 
 addUserDialog::addUserDialog(const QStringList &games, QWidget *parent)
     : QDialog(parent)
@@ -79,4 +81,69 @@ QStringList addUserDialog::getPreferredGames() const
             games.push_back(checkBox->text());
     }
     return games;
+}
+
+void addUserDialog::addUser(DataManager *data)
+{
+    addUserDialog dialog(data->getGames());
+    // If the imput data is invalid ask to correct it.
+    while (dialog.exec())
+    {
+        User user;
+        user.userName = dialog.getUserName();
+        user.firstName = dialog.getFirstName();
+        user.lastName = dialog.getLastName();
+        for (auto game : dialog.getPreferredGames())
+            user.preferredGame.insert(game, 0);
+
+        if (!dialog.validateUser(user))
+            continue;
+
+        if (!data->addUser(user))
+        {
+            QString message = "User " + user.userName + " already exists";
+            QMessageBox::critical(&dialog, "Error Add a User", message);
+        }
+        break;
+    }
+}
+
+bool addUserDialog::validateUser(const User &user)
+{
+    auto reportError = [&](const QString &message)
+    {
+        QMessageBox::critical(this, "Error Add a User", message);
+    };
+
+    QString userName = user.userName;
+    if (userName.isEmpty() || userName.size() > 16 || userName.contains(" "))
+    {
+        reportError("Username must be between 1 and 16 characters and don't contain invisible characters");
+        return false;
+    }
+
+    QString firstName = user.firstName;
+    if (firstName.isEmpty() || !firstName.contains(QRegularExpression("^[A-Z]")) ||
+        !firstName.contains(QRegularExpression("^[A-Za-z]+$")))
+    {
+        reportError("First name must consist of Latin characters only and starts with a capital letter.");
+        return false;
+    }
+
+    QString lastName = user.lastName;
+    if (lastName.isEmpty() || !lastName.contains(QRegularExpression("^[A-Z]")) ||
+        !lastName.contains(QRegularExpression(R"(^[A-Za-z]+('?[A-Za-z]+)*$)")))
+    {
+        reportError("Last name must consist of Latin characters only and starts with a capital letter.");
+        return false;
+    }
+
+    auto preferredGames = user.preferredGame;
+    if (preferredGames.isEmpty())
+    {
+        reportError("You must select at least one game");
+        return false;
+    }
+
+    return true;
 }

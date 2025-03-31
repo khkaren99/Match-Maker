@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dataManager.h"
+
 #include <QDialog>
 #include <QString>
 #include <QVector>
@@ -15,10 +17,15 @@ private:
     QVector<QCheckBox *> gameCheckBoxes;
 
 public:
-    addUserDialog(const QStringList &games, QWidget *parent = nullptr);
+    addUserDialog(const QStringList &, QWidget * = nullptr);
 
     QString getUserName() const;
     QString getFirstName() const;
     QString getLastName() const;
     QStringList getPreferredGames() const;
+
+    static void addUser(DataManager *data);
+
+private:
+    bool validateUser(const User &);
 };

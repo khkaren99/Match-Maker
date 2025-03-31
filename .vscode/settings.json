@@ -91,6 +91,12 @@
         "qapplication": "cpp",
         "qvboxlayout": "cpp",
         "qtreeview": "cpp",
-        "qjsonobject": "cpp"
+        "qjsonobject": "cpp",
+        "qobject": "cpp",
+        "qaction": "cpp",
+        "qfiledialog": "cpp",
+        "qtextstream": "cpp",
+        "qsplitter": "cpp",
+        "qfile": "cpp"
     }
 }

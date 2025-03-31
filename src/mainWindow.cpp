@@ -3,18 +3,13 @@
 #include "userList.h"
 
 #include <QMenuBar>
+#include <QSplitter>
 
-QStringList games = {"XO3", "RPS", "Minesweeper"};
-
-MainWindow::MainWindow()
-    : m_dashboard(new Dashboard(games, this))
-    , m_userList(new UserList(games, this))
+MainWindow::MainWindow(DataManager *data)
+    : m_dashboard(new Dashboard(data, this)), m_userList(new UserList(data, this))
 {
     setWindowTitle(tr("Matchmaking System"));
     resize(800, 600);
-
-    connect(m_userList, &UserList::userAdded, m_dashboard, &Dashboard::addUser);
-    connect(m_userList, &UserList::userRemoved, m_dashboard, &Dashboard::removeUser);
 
     QSplitter *spliter = new QSplitter(this);
     spliter->addWidget(m_dashboard);

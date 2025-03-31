@@ -1,10 +1,9 @@
 #pragma once
 
+#include "dataManager.h"
 #include "dashboard.h"
 #include "userList.h"
 
-#include <QWidget>
-#include <QSplitter>
 #include <QMainWindow>
 
 class MainWindow : public QMainWindow
@@ -14,7 +13,7 @@ private:
     UserList *m_userList;
 
 public:
-    MainWindow();
+    MainWindow(DataManager *data);
 
 private:
     void setupMenu();

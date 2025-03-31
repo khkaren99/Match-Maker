@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dataManager.h"
+
 #include <QVariant>
 #include <QModelIndex>
 #include <QAbstractItemModel>
@@ -11,15 +13,20 @@ private:
     {
         Node *parent = nullptr;
         QVector<Node *> children;
-        QVector<QVariant> data;
+        QString gameName;
+        User user;
     };
 
     QVector<Node *> tree;
-    const QStringList games;
-    QStringList header{"Game", "User", "Rating"};
+    const QStringList header{"Game", "User", "Rating"};
+    // this is need for fast access to exiting game,
+    // and writing to file
+    QHash<QString, Node *> games;
+
+    DataManager *m_userData;
 
 public:
-    explicit TreeModel(const QStringList &_games, QObject *parent = nullptr);
+    TreeModel(DataManager *users, QObject *parent = nullptr);
     ~TreeModel();
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
@@ -31,19 +38,6 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    void addUser(const QString &userName, const QStringList &games);
-    void addUser(const QString &userName, const QString &game, const QString& rate);
+    void addUser(const User &user);
     void removeUser(const QString &userName);
-
-    // using another section as there is some specific usings
-    // gameName
-    //     |
-    //     +--- | UserName | raite |
-    // gameName maps to the vector of {username, rate} pairs.
-private:
-    using UserInfo = QPair<QString, QString>;
-    using DashboardData = QHash<QString, QVector<UserInfo>>;
-
-public:
-    DashboardData treeDump() const;
 };
