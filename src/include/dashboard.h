@@ -1,6 +1,5 @@
 #pragma once
 
-#include "user.h"
 #include "treeModel.h"
 #include "dataManager.h"
 
@@ -14,7 +13,7 @@ private:
     using modeType = TreeModel;
 
 private:
-    DataManager *data;
+    DataManager *m_data;
     QTreeView *m_treeView;
 
 public:

@@ -11,13 +11,13 @@
 class addUserDialog : public QDialog
 {
 private:
-    QLineEdit *userNameEdit;
-    QLineEdit *firstNameEdit;
-    QLineEdit *lastNameEdit;
-    QVector<QCheckBox *> gameCheckBoxes;
+    QLineEdit *m_userNameEdit;
+    QLineEdit *m_firstNameEdit;
+    QLineEdit *m_lastNameEdit;
+    QVector<QCheckBox *> m_gameCheckBoxes;
 
 public:
-    addUserDialog(const QStringList &, QWidget * = nullptr);
+    addUserDialog(const QStringList &games, QWidget *parent = nullptr);
 
     QString getUserName() const;
     QString getFirstName() const;

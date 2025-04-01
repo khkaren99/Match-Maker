@@ -1,0 +1,860 @@
+[
+    {
+        "firstName": "John",
+        "lastName": "Smith",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 5
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            }
+        ],
+        "userName": "johnS01"
+    },
+    {
+        "firstName": "Emily",
+        "lastName": "Johnson",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 4
+            }
+        ],
+        "userName": "emilyJ02"
+    },
+    {
+        "firstName": "Michael",
+        "lastName": "Williams",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 10
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 6
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 3
+            }
+        ],
+        "userName": "michaelW03"
+    },
+    {
+        "firstName": "Jessica",
+        "lastName": "Brown",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 7
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 8
+            }
+        ],
+        "userName": "jessicaB04"
+    },
+    {
+        "firstName": "David",
+        "lastName": "Jones",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 5
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 3
+            }
+        ],
+        "userName": "davidJ05"
+    },
+    {
+        "firstName": "Sarah",
+        "lastName": "Miller",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 9
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 4
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            }
+        ],
+        "userName": "sarahM06"
+    },
+    {
+        "firstName": "Robert",
+        "lastName": "Davis",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 8
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 2
+            }
+        ],
+        "userName": "robertD07"
+    },
+    {
+        "firstName": "Jennifer",
+        "lastName": "Garcia",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 6
+            }
+        ],
+        "userName": "jenniferG08"
+    },
+    {
+        "firstName": "William",
+        "lastName": "Rodriguez",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 7
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 10
+            }
+        ],
+        "userName": "williamR09"
+    },
+    {
+        "firstName": "Elizabeth",
+        "lastName": "Wilson",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 3
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 5
+            }
+        ],
+        "userName": "elizabethW10"
+    },
+    {
+        "firstName": "James",
+        "lastName": "Martinez",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 7
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 4
+            }
+        ],
+        "userName": "jamesM11"
+    },
+    {
+        "firstName": "Patricia",
+        "lastName": "Anderson",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 5
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            }
+        ],
+        "userName": "patriciaA12"
+    },
+    {
+        "firstName": "Richard",
+        "lastName": "Taylor",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 6
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 4
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            }
+        ],
+        "userName": "richardT13"
+    },
+    {
+        "firstName": "Linda",
+        "lastName": "Thomas",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 2
+            }
+        ],
+        "userName": "lindaT14"
+    },
+    {
+        "firstName": "Charles",
+        "lastName": "Hernandez",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 9
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 3
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 5
+            }
+        ],
+        "userName": "charlesH15"
+    },
+    {
+        "firstName": "Barbara",
+        "lastName": "Moore",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 7
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 3
+            }
+        ],
+        "userName": "barbaraM16"
+    },
+    {
+        "firstName": "Joseph",
+        "lastName": "Martin",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 6
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 8
+            }
+        ],
+        "userName": "josephM17"
+    },
+    {
+        "firstName": "Susan",
+        "lastName": "Jackson",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 7
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 4
+            }
+        ],
+        "userName": "susanJ18"
+    },
+    {
+        "firstName": "Thomas",
+        "lastName": "Thompson",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 5
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 10
+            }
+        ],
+        "userName": "thomasT19"
+    },
+    {
+        "firstName": "Margaret",
+        "lastName": "White",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 6
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            }
+        ],
+        "userName": "margaretW20"
+    },
+    {
+        "firstName": "Christopher",
+        "lastName": "Lopez",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 10
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 9
+            }
+        ],
+        "userName": "christopherL21"
+    },
+    {
+        "firstName": "Dorothy",
+        "lastName": "Lee",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 8
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 3
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 6
+            }
+        ],
+        "userName": "dorothyL22"
+    },
+    {
+        "firstName": "Daniel",
+        "lastName": "Gonzalez",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 9
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 5
+            }
+        ],
+        "userName": "danielG23"
+    },
+    {
+        "firstName": "Lisa",
+        "lastName": "Harris",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 7
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            }
+        ],
+        "userName": "lisaH24"
+    },
+    {
+        "firstName": "Matthew",
+        "lastName": "Clark",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 4
+            }
+        ],
+        "userName": "matthewC25"
+    },
+    {
+        "firstName": "Nancy",
+        "lastName": "Lewis",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 7
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 6
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 3
+            }
+        ],
+        "userName": "nancyL26"
+    },
+    {
+        "firstName": "Mark",
+        "lastName": "Robinson",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 9
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 5
+            }
+        ],
+        "userName": "markR27"
+    },
+    {
+        "firstName": "Karen",
+        "lastName": "Walker",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 8
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 4
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 7
+            }
+        ],
+        "userName": "karenW28"
+    },
+    {
+        "firstName": "Donald",
+        "lastName": "Perez",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 10
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 2
+            }
+        ],
+        "userName": "donaldP29"
+    },
+    {
+        "firstName": "Helen",
+        "lastName": "Hall",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 5
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 9
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 6
+            }
+        ],
+        "userName": "helenH30"
+    },
+    {
+        "firstName": "Paul",
+        "lastName": "Young",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 8
+            }
+        ],
+        "userName": "paulY31"
+    },
+    {
+        "firstName": "Betty",
+        "lastName": "Allen",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 6
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 4
+            }
+        ],
+        "userName": "bettyA32"
+    },
+    {
+        "firstName": "Jason",
+        "lastName": "Sanchez",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 9
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 7
+            }
+        ],
+        "userName": "jasonS33"
+    },
+    {
+        "firstName": "Sandra",
+        "lastName": "Wright",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 2
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 5
+            }
+        ],
+        "userName": "sandraW34"
+    },
+    {
+        "firstName": "Andrew",
+        "lastName": "King",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 4
+            }
+        ],
+        "userName": "andrewK35"
+    },
+    {
+        "firstName": "Carol",
+        "lastName": "Scott",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 6
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 10
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            }
+        ],
+        "userName": "carolS36"
+    },
+    {
+        "firstName": "Kenneth",
+        "lastName": "Green",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 5
+            }
+        ],
+        "userName": "kennethG37"
+    },
+    {
+        "firstName": "Donna",
+        "lastName": "Baker",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 7
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 8
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 3
+            }
+        ],
+        "userName": "donnaB38"
+    },
+    {
+        "firstName": "Brian",
+        "lastName": "Adams",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 10
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 6
+            }
+        ],
+        "userName": "brianA39"
+    },
+    {
+        "firstName": "Ruth",
+        "lastName": "Nelson",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 4
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 7
+            }
+        ],
+        "userName": "ruthN40"
+    },
+    {
+        "firstName": "George",
+        "lastName": "Hill",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 5
+            }
+        ],
+        "userName": "georgeH41"
+    },
+    {
+        "firstName": "Deborah",
+        "lastName": "Ramirez",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 6
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 9
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            }
+        ],
+        "userName": "deborahR42"
+    },
+    {
+        "firstName": "Edward",
+        "lastName": "Campbell",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 3
+            }
+        ],
+        "userName": "edwardC43"
+    },
+    {
+        "firstName": "Michelle",
+        "lastName": "Mitchell",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 7
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 8
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 5
+            }
+        ],
+        "userName": "michelleM44"
+    },
+    {
+        "firstName": "Ronald",
+        "lastName": "Roberts",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 9
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 6
+            }
+        ],
+        "userName": "ronaldR45"
+    },
+    {
+        "firstName": "Laura",
+        "lastName": "Carter",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 4
+            }
+        ],
+        "userName": "lauraC46"
+    },
+    {
+        "firstName": "Steven",
+        "lastName": "Phillips",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 8
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 6
+            }
+        ],
+        "userName": "stevenP47"
+    },
+    {
+        "firstName": "Kimberly",
+        "lastName": "Evans",
+        "preferredGame": [
+            {
+                "gameName": "RPS",
+                "gameRate": 7
+            },
+            {
+                "gameName": "XO3",
+                "gameRate": 5
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 9
+            }
+        ],
+        "userName": "kimberlyE48"
+    },
+    {
+        "firstName": "Timothy",
+        "lastName": "Turner",
+        "preferredGame": [
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 10
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 8
+            }
+        ],
+        "userName": "timothyT49"
+    },
+    {
+        "firstName": "Melissa",
+        "lastName": "Torres",
+        "preferredGame": [
+            {
+                "gameName": "XO3",
+                "gameRate": 9
+            },
+            {
+                "gameName": "Minesweeper",
+                "gameRate": 7
+            },
+            {
+                "gameName": "RPS",
+                "gameRate": 6
+            }
+        ],
+        "userName": "melissaT50"
+    }
+]

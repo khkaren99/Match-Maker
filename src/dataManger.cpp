@@ -12,9 +12,10 @@ bool DataManager::addUser(const User &user)
 {
 	if (m_users.contains(user.userName))
 		return false;
-
-	m_users.insert(user.userName, user);
-	emit userAdded(&m_users[user.userName]);
+	
+	auto user_p = std::make_shared<User>(user);
+	m_users.insert(user.userName, user_p);
+	emit userAdded(m_users[user.userName]);
 	return true;
 }
 
@@ -24,7 +25,7 @@ bool DataManager::removeUser(const QString &userName)
 	if (!m_users.contains(userName))
 		return false;
 
-	if (m_users[userName].state != User::FREE)
+	if (m_users[userName]->state != User::FREE)
 	{
 		QString message = userName + " could remove as it in Match process\n";
 		message += "Free the User before remove";
@@ -37,15 +38,15 @@ bool DataManager::removeUser(const QString &userName)
 	return true;
 }
 
-User *DataManager::getUser(const QString &userName)
+std::shared_ptr<User> DataManager::getUser(const QString &userName)
 {
 	if (m_users.contains(userName))
-		return &m_users[userName];
+		return m_users[userName];
 	return nullptr;
 }
 
 // return all users list
-QList<User> DataManager::getUsersList() const
+QList<std::shared_ptr<User>> DataManager::getUsersList() const
 {
 	return m_users.values();
 }
@@ -57,9 +58,9 @@ size_t DataManager::usersCount() const
 
 bool DataManager::addGame(const QString &game)
 {
-	if (!games.contains(game))
+	if (!m_games.contains(game))
 	{
-		games.append(game);
+		m_games.append(game);
 		return true;
 	}
 	return false;
@@ -67,9 +68,9 @@ bool DataManager::addGame(const QString &game)
 
 bool DataManager::removeGame(const QString &game)
 {
-	if (games.contains(game))
+	if (m_games.contains(game))
 	{
-		games.removeAll(game);
+		m_games.removeAll(game);
 		return true;
 	}
 	return false;
@@ -77,5 +78,5 @@ bool DataManager::removeGame(const QString &game)
 
 QStringList DataManager::getGames() const
 {
-	return games;
+	return m_games;
 }

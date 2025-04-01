@@ -16,10 +16,9 @@ private:
     MatchMaker *m_core;
 
 public:
-    MainWindow(DataManager *data);
-
-    QString askUserName();
+    MainWindow(DataManager *data, MatchMaker *core);
 
 private:
+    QString askUserName();
     void setupMenu();
 };

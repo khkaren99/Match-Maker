@@ -6,25 +6,29 @@
 #include <QJsonDocument>
 
 Application::Application(int argc, char **argv)
-    : QApplication(argc, argv), data(new DataManager), mainWindow(new MainWindow(data.get()))
+    : QApplication(argc, argv)
 {
+    m_data.reset(new DataManager);
+    m_core.reset(new MatchMaker(m_data.get()));
+    m_mainWindow.reset(new MainWindow(m_data.get(), m_core.get()));
+
     loadCache();
+}
+
+Application::~Application()
+{
+    writeCache();
 }
 
 int Application::exec()
 {
     QStringList games = {"XO3", "RPS", "Minesweeper"};
     for (auto game : games)
-        data->addGame(game);
+        m_data->addGame(game);
 
-    mainWindow->show();
+    m_mainWindow->show();
 
     return QApplication::exec();
-}
-
-Application::~Application()
-{
-    writeCache();
 }
 
 // This function muches with UserList::writeUserList
@@ -39,15 +43,15 @@ void Application::writeCache()
     }
 
     QJsonArray userListData;
-    auto users = data->getUsersList();
+    auto users = m_data->getUsersList();
     for (auto user : users)
     {
         QJsonObject userInfo;
-        userInfo["userName"] = user.userName;
-        userInfo["firstName"] = user.firstName;
-        userInfo["lastName"] = user.lastName;
+        userInfo["userName"] = user->userName;
+        userInfo["firstName"] = user->firstName;
+        userInfo["lastName"] = user->lastName;
         QJsonArray userGames;
-        for (auto it = user.preferredGame.begin(); it != user.preferredGame.end(); ++it)
+        for (auto it = user->preferredGame.begin(); it != user->preferredGame.end(); ++it)
         {
             QJsonObject gameInfo;
             gameInfo["gameName"] = it.key();
@@ -74,6 +78,7 @@ void Application::loadCache()
     if (!loadFile.open(QIODevice::ReadOnly))
     {
         qWarning("Couldn't open load file.");
+        return;
     }
 
     QByteArray fileData = loadFile.readAll();
@@ -96,7 +101,7 @@ void Application::loadCache()
             user.preferredGame.insert(gameInfo["gameName"].toString(), gameInfo["gameRate"].toInt());
         }
 
-        if (!data->addUser(user))
+        if (!m_data->addUser(user))
             qWarning("Invalid user");
     }
 }

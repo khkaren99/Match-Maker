@@ -20,7 +20,7 @@ UserList::UserList(DataManager *data, QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     // Creating tabel model and tabel view.
-    // Set QSortFilterProxyModel for sorting and filtering.
+    // Set sorting and filtering proxy model.
     QAbstractTableModel *m_tableModel = new modeType(m_users, this);
     auto proxyModel = new QSortFilterProxyModel(m_tableModel);
     proxyModel->setSourceModel(m_tableModel);
@@ -61,9 +61,8 @@ void UserList::removeUser()
     QModelIndexList selectedIndexes = m_tableView->selectionModel()->selectedRows();
     QStringList userNames;
     for (auto index = selectedIndexes.begin(); index != selectedIndexes.end(); ++index)
-    {
         userNames.append(index->data().toString());
-    }
+
     for (auto user : userNames)
     {
         if (!m_users->removeUser(user))
@@ -95,6 +94,7 @@ void UserList::readUserList(QString fileName)
     if (!loadFile.open(QIODevice::ReadOnly))
     {
         qWarning("Couldn't open load file.");
+        return;
     }
 
     QByteArray fileData = loadFile.readAll();
@@ -137,11 +137,11 @@ void UserList::writeUserList(QString fileName)
     for (auto user : data)
     {
         QJsonObject userInfo;
-        userInfo["userName"] = user.userName;
-        userInfo["firstName"] = user.firstName;
-        userInfo["lastName"] = user.lastName;
+        userInfo["userName"] = user->userName;
+        userInfo["firstName"] = user->firstName;
+        userInfo["lastName"] = user->lastName;
         QJsonArray userGames;
-        for (auto it = user.preferredGame.begin(); it != user.preferredGame.end(); ++it)
+        for (auto it = user->preferredGame.begin(); it != user->preferredGame.end(); ++it)
         {
             QJsonObject gameInfo;
             gameInfo["gameName"] = it.key();
@@ -173,7 +173,6 @@ void UserList::setupContextMenu()
 void UserList::filter()
 {
     auto proxyModel = static_cast<QSortFilterProxyModel *>(m_tableView->model());
-
     proxyModel->setFilterRegularExpression(QRegularExpression(m_filterNameEdit->text(),
                                                               QRegularExpression::CaseInsensitiveOption));
 }

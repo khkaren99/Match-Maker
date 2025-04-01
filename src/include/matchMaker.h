@@ -1,8 +1,12 @@
 #pragma once
 
+#include "user.h"
 #include "dataManager.h"
 #include "gameManager.h"
 
+#include <memory>
+
+#include <QHash>
 #include <QObject>
 #include <QString>
 
@@ -11,12 +15,13 @@ class MatchMaker : public QObject
 	Q_OBJECT
 
 private:
-	DataManager *data;
-	QHash<QString, User *> waitList;
-	QList<GameManager *> runingGames;
+	DataManager *m_data;
+	QHash<QString, User *> m_waitList;
+	QVector<GameManager*> m_games;
 
 public:
 	MatchMaker(DataManager *data, QObject *parent = nullptr);
+	~MatchMaker();
 
 	void requestMatch(const QString &userName);
 	void freeUser(const QString &userName);

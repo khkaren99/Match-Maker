@@ -4,14 +4,16 @@ TableModel::TableModel(DataManager *users, QObject *parent)
     : QAbstractTableModel(parent), m_users(users)
 {
     // Connecttion to data updates
-    connect(m_users, &DataManager::userAdded, [&](const User *)
-            {
-            beginResetModel();
-            endResetModel(); });
+    connect(m_users, &DataManager::userAdded, [&](std::shared_ptr<User>)
+    {
+        beginResetModel();
+        endResetModel();
+    });
     connect(m_users, &DataManager::userRemoved, [&](const QString &)
-            {
-            beginResetModel();
-            endResetModel(); });
+    {
+        beginResetModel();
+        endResetModel();
+    });
 }
 
 int TableModel::rowCount(const QModelIndex &parent) const
@@ -32,13 +34,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case 0:
-            return QVariant(users[index.row()].userName);
+            return QVariant(users[index.row()]->userName);
         case 1:
-            return QVariant(users[index.row()].firstName);
+            return QVariant(users[index.row()]->firstName);
         case 2:
-            return QVariant(users[index.row()].lastName);
+            return QVariant(users[index.row()]->lastName);
         case 3:
-            return QVariant(users[index.row()].preferredGame.keys().join(", "));
+            return QVariant(users[index.row()]->preferredGame.keys().join(", "));
         }
     }
     return QVariant();

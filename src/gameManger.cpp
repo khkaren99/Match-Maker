@@ -4,11 +4,13 @@
 #include <QCoreApplication>
 
 GameManager::GameManager(QObject *parent)
-	: QObject(parent), process(new QProcess(this))
+	: QObject(parent)
+	, m_process(std::make_unique<QProcess>())
 {
-	procPath = QCoreApplication::applicationDirPath() + "/game";
+	m_procPath = QCoreApplication::applicationDirPath() + "/game";
 
-	connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &GameManager::applicationFinished);
+	connect(m_process.get(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), 
+			this, &GameManager::applicationFinished);
 }
 
 void GameManager::run(const QString &game, const QString &user1, const QString &user2)
@@ -18,17 +20,17 @@ void GameManager::run(const QString &game, const QString &user1, const QString &
 	args.append(user1);
 	args.append(user2);
 
-	process->start(procPath, args);
+	m_process->start(m_procPath, args);
 }
 
 QProcess::ProcessState GameManager::state()
 {
-	return process->state();
+	return m_process->state();
 }
 
 bool GameManager::waitForFinished()
 {
-	return process->waitForFinished();
+	return m_process->waitForFinished();
 }
 
 void GameManager::applicationFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -39,7 +41,7 @@ void GameManager::applicationFinished(int exitCode, QProcess::ExitStatus exitSta
 		return;
 	}
 
-	QString output = process->readAllStandardOutput();
+	QString output = m_process->readAllStandardOutput();
 	QStringList results = output.split("\n", Qt::SkipEmptyParts);
 	QString winner = results.last().trimmed();
 

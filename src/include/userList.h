@@ -1,8 +1,9 @@
 #pragma once
 
-#include "user.h"
+#include "dataManager.h"
 #include "tableModel.h"
 
+#include <QLineEdit>
 #include <QTableView>
 
 class UserList : public QWidget

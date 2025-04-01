@@ -1,18 +1,19 @@
 #include "mainWindow.h"
-#include "dashboard.h"
-#include "userList.h"
 
-#include <QMenuBar>
-#include <QSplitter>
-#include <QDialog>
-#include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
+#include <QDialog>
+#include <QMenuBar>
 #include <QLineEdit>
+#include <QSplitter>
+#include <QHBoxLayout>
 #include <QMessageBox>
+#include <QPushButton>
 
-MainWindow::MainWindow(DataManager *data)
-    : m_data(data), m_dashboard(new Dashboard(data, this)), m_userList(new UserList(data, this)), m_core(new MatchMaker(data, this))
+MainWindow::MainWindow(DataManager *data, MatchMaker *core)
+    : m_data(data)
+    , m_dashboard(new Dashboard(data, this))
+    , m_userList(new UserList(data, this))
+    , m_core(core)
 {
     setWindowTitle(tr("Matchmaking System"));
     resize(800, 600);
@@ -55,8 +56,8 @@ QString MainWindow::askUserName()
         // Check that user is exist. This is not necessary as adds unnecessary
         // "depenance" MainWindow to DataManager but I preferred
         QString userName = userNameEdit->text();
-        User *user = m_data->getUser(userName);
-        if (user != nullptr)
+        std::shared_ptr<User> user = m_data->getUser(userName);
+        if (user.get() != nullptr)
             return userName;
         // else no user
         QMessageBox::critical(&match, "Make a match", "Undefined User");
@@ -91,9 +92,13 @@ void MainWindow::setupMenu()
     viewMenu->addAction(shDashboard);
     viewMenu->addAction(shUserList);
     connect(shDashboard, &QAction::triggered, this, [&]()
-            { m_dashboard->setVisible(!m_dashboard->isVisible()); });
+    {
+        m_dashboard->setVisible(!m_dashboard->isVisible());
+    });
     connect(shUserList, &QAction::triggered, this, [&]()
-            { m_userList->setVisible(!m_userList->isVisible()); });
+    {
+        m_userList->setVisible(!m_userList->isVisible());
+    });
 
     QMenu *matchMakerMenu = menuBar()->addMenu(tr("Match Maker"));
     QAction *matchAct = new QAction(tr("Request Match"), this);
@@ -101,11 +106,13 @@ void MainWindow::setupMenu()
     matchMakerMenu->addAction(matchAct);
     matchMakerMenu->addAction(freeAct);
     connect(matchAct, &QAction::triggered, [&]()
-            {
+    {
         QString userName = askUserName();
-        m_core->requestMatch(userName); });
+        m_core->requestMatch(userName);
+    });
     connect(freeAct, &QAction::triggered, [&]()
-            {
+    {
         QString userName = askUserName();
-        m_core->freeUser(userName); });
+        m_core->freeUser(userName);
+    });
 }

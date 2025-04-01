@@ -7,7 +7,7 @@ struct User
 {
     enum UserState
     {
-        FREE,
+        FREE = 0,
         BUSY,
         WAITING
     };

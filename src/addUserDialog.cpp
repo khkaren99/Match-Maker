@@ -17,23 +17,23 @@ addUserDialog::addUserDialog(const QStringList &games, QWidget *parent)
 
     QHBoxLayout *userNameLine = new QHBoxLayout(this);
     QLabel *userNameLabel = new QLabel("Username:", this);
-    userNameEdit = new QLineEdit(this);
+    m_userNameEdit = new QLineEdit(this);
     userNameLine->addWidget(userNameLabel);
-    userNameLine->addWidget(userNameEdit);
+    userNameLine->addWidget(m_userNameEdit);
     layout->addLayout(userNameLine, 0, 0);
 
     QHBoxLayout *firstNameLine = new QHBoxLayout(this);
     QLabel *firstNameLabel = new QLabel("First name:", this);
-    firstNameEdit = new QLineEdit(this);
+    m_firstNameEdit = new QLineEdit(this);
     firstNameLine->addWidget(firstNameLabel);
-    firstNameLine->addWidget(firstNameEdit);
+    firstNameLine->addWidget(m_firstNameEdit);
     layout->addLayout(firstNameLine, 1, 0);
 
     QHBoxLayout *lastNameLine = new QHBoxLayout(this);
     QLabel *lastNameLabel = new QLabel("Last name:", this);
-    lastNameEdit = new QLineEdit(this);
+    m_lastNameEdit = new QLineEdit(this);
     lastNameLine->addWidget(lastNameLabel);
-    lastNameLine->addWidget(lastNameEdit);
+    lastNameLine->addWidget(m_lastNameEdit);
     layout->addLayout(lastNameLine, 2, 0);
 
     QHBoxLayout *preferredGameLine = new QHBoxLayout(this);
@@ -41,8 +41,8 @@ addUserDialog::addUserDialog(const QStringList &games, QWidget *parent)
     preferredGameLine->addWidget(preferredGameLabel);
     for (auto game : games)
     {
-        gameCheckBoxes.push_back(new QCheckBox(game, this));
-        preferredGameLine->addWidget(gameCheckBoxes.back());
+        m_gameCheckBoxes.push_back(new QCheckBox(game, this));
+        preferredGameLine->addWidget(m_gameCheckBoxes.back());
     }
     layout->addLayout(preferredGameLine, 3, 0);
 
@@ -59,23 +59,23 @@ addUserDialog::addUserDialog(const QStringList &games, QWidget *parent)
 
 QString addUserDialog::getUserName() const
 {
-    return userNameEdit->text();
+    return m_userNameEdit->text();
 }
 
 QString addUserDialog::getFirstName() const
 {
-    return firstNameEdit->text();
+    return m_firstNameEdit->text();
 }
 
 QString addUserDialog::getLastName() const
 {
-    return lastNameEdit->text();
+    return m_lastNameEdit->text();
 }
 
 QStringList addUserDialog::getPreferredGames() const
 {
     QStringList games;
-    for (auto checkBox : gameCheckBoxes)
+    for (auto checkBox : m_gameCheckBoxes)
     {
         if (checkBox->isChecked())
             games.push_back(checkBox->text());

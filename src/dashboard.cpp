@@ -8,18 +8,20 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-Dashboard::Dashboard(DataManager *_data, QWidget *parent)
-    : QWidget(parent), data(_data), m_treeView(new QTreeView(this))
+Dashboard::Dashboard(DataManager *data, QWidget *parent)
+    : QWidget(parent)
+    , m_data(data)
+    , m_treeView(new QTreeView(this))
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    QAbstractItemModel *m_treeModel = new modeType(data, this);
+    QAbstractItemModel *m_treeModel = new modeType(m_data, this);
 
     m_treeView->setModel(m_treeModel);
     m_treeView->setFocusPolicy(Qt::NoFocus);
     m_treeView->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_treeView->setSelectionMode(QAbstractItemView::MultiSelection);
+    m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     layout->addWidget(m_treeView, 0);
 
@@ -32,7 +34,7 @@ void Dashboard::saveDashboard()
     if (!fileName.isEmpty())
     {
         // passes all game list to write into file
-        writeDashboard(fileName, data->getGames());
+        writeDashboard(fileName, m_data->getGames());
     }
 }
 
@@ -50,7 +52,7 @@ void Dashboard::writeDashboard(QString fileName, const QStringList &games)
 
     // array for each game in games
     QVector<QJsonArray> usersInfo(games.size());
-    auto users = data->getUsersList();
+    auto users = m_data->getUsersList();
     // iterate over users and find fill the game data
     for (auto user : users)
     {
@@ -58,11 +60,11 @@ void Dashboard::writeDashboard(QString fileName, const QStringList &games)
         // the user preferres the game
         for (size_t i = 0; i < games.size(); ++i)
         {
-            if (user.preferredGame.contains(games[i]))
+            if (user->preferredGame.contains(games[i]))
             {
                 QJsonObject userInfo;
-                userInfo["userName"] = user.userName;
-                userInfo["rate"] = user.preferredGame[games[i]];
+                userInfo["userName"] = user->userName;
+                userInfo["rate"] = user->preferredGame[games[i]];
                 usersInfo[i].append(userInfo);
             }
         }
@@ -81,7 +83,7 @@ void Dashboard::setupContextMenu()
 {
     auto addAction = new QAction("Save to file", this);
     connect(addAction, &QAction::triggered, [&]()
-            {
+    {
         // get selected row and pass the selected rows gameNames for writing
         QModelIndexList selectedIndexes = m_treeView->selectionModel()->selectedRows();
         QStringList writingGames;
@@ -96,7 +98,9 @@ void Dashboard::setupContextMenu()
 
         QString fileName = QFileDialog::getSaveFileName(this);
         if (!fileName.isEmpty())
-            writeDashboard(fileName, writingGames); });
+            writeDashboard(fileName, writingGames); 
+    });
+
     this->addAction(addAction);
 
     setContextMenuPolicy(Qt::ActionsContextMenu);

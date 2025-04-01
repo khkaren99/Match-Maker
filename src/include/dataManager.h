@@ -13,8 +13,8 @@ class DataManager : public QObject
 	Q_OBJECT
 
 private:
-	QHash<QString, User> m_users;
-	QStringList games;
+	QHash<QString, std::shared_ptr<User>> m_users;
+	QStringList m_games;
 
 public:
 	DataManager(QObject *parent = nullptr);
@@ -24,10 +24,10 @@ public:
 	// return true if user removed
 	bool removeUser(const QString &userName);
 	// fast access to user
-	User *getUser(const QString &userName);
+	std::shared_ptr<User> getUser(const QString &userName);
 
 	// return all users list
-	QList<User> getUsersList() const;
+	QList<std::shared_ptr<User>> getUsersList() const;
 	size_t usersCount() const;
 
 	bool addGame(const QString &gameName);
@@ -36,6 +36,6 @@ public:
 
 signals:
 	void dataUpdate();
-	void userAdded(const User *user);
+	void userAdded(std::shared_ptr<User> user);
 	void userRemoved(const QString &userName);
 };

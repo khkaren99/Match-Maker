@@ -1,27 +1,33 @@
 #include "treeModel.h"
 
 TreeModel::TreeModel(DataManager *data, QObject *parent)
-    : QAbstractItemModel(parent), m_userData(data)
+    : QAbstractItemModel(parent)
+    , m_userData(data)
 {
     // Connecttion to data update
     connect(m_userData, &DataManager::userRemoved, [&](const QString &userName)
-            { removeUser(userName); });
-    connect(m_userData, &DataManager::userAdded, [&](const User *user)
-            { addUser(user); });
+    {
+        removeUser(userName);
+    });
+    connect(m_userData, &DataManager::userAdded, [&](std::shared_ptr<User> user)
+    {
+        addUser(user);
+    });
     connect(m_userData, &DataManager::dataUpdate, [&]()
-            { beginResetModel();
-                endResetModel(); });
+    {
+        beginResetModel();
+        endResetModel();
+    });
 }
 
 // Valgring is clean in almost all scenarios.
 TreeModel::~TreeModel()
 {
-    for (auto item : tree)
+    for (auto item : m_tree)
     {
-        for (auto child : item->children)
-        {
+        for (auto child : item->n_children)
             delete child;
-        }
+
         delete item;
     }
 }
@@ -32,15 +38,15 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) con
     if (!parent.isValid())
     {
         // For root we need only 0 column
-        if (row < tree.size() && column == 0)
-            return createIndex(row, column, tree[row]);
+        if (row < m_tree.size() && column == 0)
+            return createIndex(row, column, m_tree[row]);
         // else
         return QModelIndex();
     }
     // else the parent is valid and work with childs
     Node *node = static_cast<Node *>(parent.internalPointer());
     if (node != nullptr)
-        return createIndex(row, column, node->children[row]);
+        return createIndex(row, column, node->n_children[row]);
 
     return QModelIndex();
 }
@@ -49,10 +55,10 @@ QModelIndex TreeModel::parent(const QModelIndex &child) const
 {
     // If the index don't contain pointer it's the root/(no parent).
     Node *node = static_cast<Node *>(child.internalPointer());
-    if (node && !tree.contains(node))
+    if (node && !m_tree.contains(node))
     {
-        Node *parentNode = node->parent;
-        int row = tree.indexOf(parentNode);
+        Node *parentNode = node->n_parent;
+        int row = m_tree.indexOf(parentNode);
         return createIndex(row, 0, parentNode);
     }
     return QModelIndex();
@@ -61,9 +67,9 @@ QModelIndex TreeModel::parent(const QModelIndex &child) const
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
     Node *node = static_cast<Node *>(parent.internalPointer());
-    if (node)
-        return node->children.size();
-    return games.size();
+    if (node != nullptr)
+        return node->n_children.size();
+    return m_games.size();
 }
 
 int TreeModel::columnCount(const QModelIndex &parent) const
@@ -77,21 +83,20 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     {
         Node *node = static_cast<Node *>(index.internalPointer());
         // if node doesn't has parent it is root
-        if (node->parent == nullptr)
-            return node->gameName;
+        if (node->n_parent == nullptr)
+        {
+            return node->n_gameName;
+        
+        }
         else
         {
             // For child the column 0 should be empty
             switch (index.column())
             {
             case 1:
-                return node->user->userName;
-                break;
+                return node->n_user->userName;
             case 2:
-                return node->user->preferredGame[node->parent->gameName];
-                break;
-            default:
-                break;
+                return node->n_user->preferredGame[node->n_parent->n_gameName];
             }
         }
     }
@@ -105,58 +110,59 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
     return QVariant();
 }
 
-void TreeModel::addUser(const User *user)
+void TreeModel::addUser(std::shared_ptr<User>& user)
 {
     for (auto game : user->preferredGame.keys())
     {
-        // check if the game didn't add in tree them add it
-        if (!games.contains(game))
+        // check if the game didn't add in m_tree them add it
+        if (!m_games.contains(game))
         {
             Node *node = new Node;
-            node->gameName = game;
-            tree.push_back(node);
-            games.insert(game, node);
+            node->n_gameName = game;
+            m_tree.push_back(node);
+            m_games.insert(game, node);
         }
         // Check the user didn't add
-        for (auto child : games[game]->children)
-            if (child->user->userName == user->userName)
+        for (auto child : m_games[game]->n_children)
+            if (child->n_user->userName == user->userName)
                 return;
 
         // add a user in game
         Node *p = new Node;
-        p->user = user;
-        p->parent = games[game];
+        p->n_user = user;
+        p->n_parent = m_games[game];
 
         beginInsertRows(QModelIndex(), 0, 0);
-        games[game]->children.append(p);
+        m_games[game]->n_children.append(p);
         endInsertRows();
     }
 }
 
 void TreeModel::removeUser(const QString &userName)
 {
-    auto game = tree.begin();
-    while (game != tree.end())
+    auto game = m_tree.begin();
+    while (game != m_tree.end())
     {
         // remove user from game
-        for (auto child : (*game)->children)
+        for (auto child : (*game)->n_children)
         {
-            if (userName == child->user->userName)
+            if (userName == child->n_user->userName)
             {
                 beginRemoveRows(QModelIndex(), 0, 0);
-                (*game)->children.remove((*game)->children.indexOf(child));
+                (*game)->n_children.remove((*game)->n_children.indexOf(child));
                 endRemoveRows();
                 delete child;
                 break;
             }
         }
         // remove game if it's empty
-        if ((*game)->children.isEmpty())
+        if ((*game)->n_children.isEmpty())
         {
-            auto gameName = (*game)->gameName;
+            auto gameName = (*game)->n_gameName;
             beginRemoveRows(QModelIndex(), 0, 0);
-            game = tree.erase(game);
-            games.remove(gameName);
+            game = m_tree.erase(game);
+            delete m_games[gameName];
+            m_games.remove(gameName);
             endRemoveRows();
             continue;
         }
