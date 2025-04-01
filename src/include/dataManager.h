@@ -2,6 +2,8 @@
 
 #include "user.h"
 
+#include <memory>
+
 #include <QHash>
 #include <QObject>
 #include <QStringList>
@@ -10,24 +12,30 @@ class DataManager : public QObject
 {
 	Q_OBJECT
 
-public:
-	// return true if user added
-	bool addUser(const User &user);
-	// return true if user removed
-	bool removeUser(const QString &userName);
-	// return all users list
-	QList<User> getUsers();
-	size_t usersCount();
-
-	bool addGame(const QString &gameName);
-	bool removeGame(const QString &gameName);
-	QStringList getGames();
-
 private:
 	QHash<QString, User> m_users;
 	QStringList games;
 
+public:
+	DataManager(QObject *parent = nullptr);
+
+	// return true if user added
+	bool addUser(const User &user);
+	// return true if user removed
+	bool removeUser(const QString &userName);
+	// fast access to user
+	User *getUser(const QString &userName);
+
+	// return all users list
+	QList<User> getUsersList() const;
+	size_t usersCount() const;
+
+	bool addGame(const QString &gameName);
+	bool removeGame(const QString &gameName);
+	QStringList getGames() const;
+
 signals:
-	void userAdded(const User &user);
+	void dataUpdate();
+	void userAdded(const User *user);
 	void userRemoved(const QString &userName);
 };

@@ -50,7 +50,7 @@ void Dashboard::writeDashboard(QString fileName, const QStringList &games)
 
     // array for each game in games
     QVector<QJsonArray> usersInfo(games.size());
-    auto users = data->getUsers();
+    auto users = data->getUsersList();
     // iterate over users and find fill the game data
     for (auto user : users)
     {

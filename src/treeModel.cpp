@@ -6,8 +6,11 @@ TreeModel::TreeModel(DataManager *data, QObject *parent)
     // Connecttion to data update
     connect(m_userData, &DataManager::userRemoved, [&](const QString &userName)
             { removeUser(userName); });
-    connect(m_userData, &DataManager::userAdded, [&](const User &user)
+    connect(m_userData, &DataManager::userAdded, [&](const User *user)
             { addUser(user); });
+    connect(m_userData, &DataManager::dataUpdate, [&]()
+            { beginResetModel();
+                endResetModel(); });
 }
 
 // Valgring is clean in almost all scenarios.
@@ -82,10 +85,10 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
             switch (index.column())
             {
             case 1:
-                return node->user.userName;
+                return node->user->userName;
                 break;
             case 2:
-                return node->user.preferredGame[node->parent->gameName];
+                return node->user->preferredGame[node->parent->gameName];
                 break;
             default:
                 break;
@@ -102,9 +105,9 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
     return QVariant();
 }
 
-void TreeModel::addUser(const User &user)
+void TreeModel::addUser(const User *user)
 {
-    for (auto game : user.preferredGame.keys())
+    for (auto game : user->preferredGame.keys())
     {
         // check if the game didn't add in tree them add it
         if (!games.contains(game))
@@ -116,7 +119,7 @@ void TreeModel::addUser(const User &user)
         }
         // Check the user didn't add
         for (auto child : games[game]->children)
-            if (child->user.userName == user.userName)
+            if (child->user->userName == user->userName)
                 return;
 
         // add a user in game
@@ -138,7 +141,7 @@ void TreeModel::removeUser(const QString &userName)
         // remove user from game
         for (auto child : (*game)->children)
         {
-            if (userName == child->user.userName)
+            if (userName == child->user->userName)
             {
                 beginRemoveRows(QModelIndex(), 0, 0);
                 (*game)->children.remove((*game)->children.indexOf(child));

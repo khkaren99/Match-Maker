@@ -4,9 +4,15 @@
 
 #include <QMenuBar>
 #include <QSplitter>
+#include <QDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QMessageBox>
 
 MainWindow::MainWindow(DataManager *data)
-    : m_dashboard(new Dashboard(data, this)), m_userList(new UserList(data, this))
+    : m_data(data), m_dashboard(new Dashboard(data, this)), m_userList(new UserList(data, this)), m_core(new MatchMaker(data, this))
 {
     setWindowTitle(tr("Matchmaking System"));
     resize(800, 600);
@@ -18,6 +24,46 @@ MainWindow::MainWindow(DataManager *data)
 
     setupMenu();
 }
+
+QString MainWindow::askUserName()
+{
+    // Create a dialog for imput userName.
+    QDialog match;
+    match.setWindowTitle("Make a match");
+    QGridLayout *layout = new QGridLayout(&match);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
+
+    QHBoxLayout *userNameLine = new QHBoxLayout(&match);
+    QLabel *userNameLabel = new QLabel("User Name:", &match);
+    QLineEdit *userNameEdit = new QLineEdit(&match);
+    userNameLine->addWidget(userNameLabel);
+    userNameLine->addWidget(userNameEdit);
+    layout->addLayout(userNameLine, 0, 0);
+
+    QHBoxLayout *buttonLine = new QHBoxLayout(&match);
+    QPushButton *cancelButton = new QPushButton("Cancel", &match);
+    QPushButton *okButton = new QPushButton("OK", &match);
+    buttonLine->addWidget(cancelButton);
+    buttonLine->addWidget(okButton);
+    layout->addLayout(buttonLine, 4, 0, Qt::AlignRight);
+
+    QObject::connect(okButton, &QPushButton::clicked, &match, &QDialog::accept);
+    QObject::connect(cancelButton, &QPushButton::clicked, &match, &QDialog::reject);
+
+    while (match.exec())
+    {
+        // Check that user is exist. This is not necessary as adds unnecessary
+        // "depenance" MainWindow to DataManager but I preferred
+        QString userName = userNameEdit->text();
+        User *user = m_data->getUser(userName);
+        if (user != nullptr)
+            return userName;
+        // else no user
+        QMessageBox::critical(&match, "Make a match", "Undefined User");
+    }
+    return "";
+}
+
 void MainWindow::setupMenu()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
@@ -48,4 +94,18 @@ void MainWindow::setupMenu()
             { m_dashboard->setVisible(!m_dashboard->isVisible()); });
     connect(shUserList, &QAction::triggered, this, [&]()
             { m_userList->setVisible(!m_userList->isVisible()); });
+
+    QMenu *matchMakerMenu = menuBar()->addMenu(tr("Match Maker"));
+    QAction *matchAct = new QAction(tr("Request Match"), this);
+    QAction *freeAct = new QAction(tr("Free User"), this);
+    matchMakerMenu->addAction(matchAct);
+    matchMakerMenu->addAction(freeAct);
+    connect(matchAct, &QAction::triggered, [&]()
+            {
+        QString userName = askUserName();
+        m_core->requestMatch(userName); });
+    connect(freeAct, &QAction::triggered, [&]()
+            {
+        QString userName = askUserName();
+        m_core->freeUser(userName); });
 }

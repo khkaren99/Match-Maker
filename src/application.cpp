@@ -39,7 +39,7 @@ void Application::writeCache()
     }
 
     QJsonArray userListData;
-    auto users = data->getUsers();
+    auto users = data->getUsersList();
     for (auto user : users)
     {
         QJsonObject userInfo;

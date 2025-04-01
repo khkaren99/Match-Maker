@@ -4,7 +4,7 @@ TableModel::TableModel(DataManager *users, QObject *parent)
     : QAbstractTableModel(parent), m_users(users)
 {
     // Connecttion to data updates
-    connect(m_users, &DataManager::userAdded, [&](const User &)
+    connect(m_users, &DataManager::userAdded, [&](const User *)
             {
             beginResetModel();
             endResetModel(); });
@@ -28,7 +28,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 {
     if (index.isValid() && role == Qt::DisplayRole)
     {
-        auto users = m_users->getUsers();
+        auto users = m_users->getUsersList();
         switch (index.column())
         {
         case 0:

@@ -19,13 +19,20 @@ int main(int argc, char **argv)
 	}
 
 	std::unique_ptr<Game> game;
-	if (strcmp(argv[1], "XO3") == 0){
+	if (strcmp(argv[1], "XO3") == 0)
+	{
 		game.reset(new XO3);
-	} else if (strcmp(argv[1], "RPS") == 0){
+	}
+	else if (strcmp(argv[1], "RPS") == 0)
+	{
 		game.reset(new RockPaperScissors);
-	} else if (strcmp(argv[1], "Minesweeper") == 0) {
+	}
+	else if (strcmp(argv[1], "Minesweeper") == 0)
+	{
 		game.reset(new Minesweeper);
-	} else {
+	}
+	else
+	{
 		std::cerr << "The game \"" << argv[1] << "\" not found" << std::endl;
 		return 1;
 	}
@@ -37,13 +44,13 @@ int main(int argc, char **argv)
 	switch (winner)
 	{
 	case 0:
-		std::cout << "It's a draw." << std::endl;
+		std::cout << argv[2] << " " << argv[3] << std::endl;
 		break;
 	case 1:
-		std::cout << "Winner is: " << argv[2] << std::endl;
+		std::cout << argv[2] << std::endl;
 		break;
 	case 2:
-		std::cout << "Winner is: " << argv[3] << std::endl;
+		std::cout << argv[3] << std::endl;
 		break;
 	default:
 		std::cerr << "Missing winner" << std::endl;

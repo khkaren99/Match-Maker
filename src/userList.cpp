@@ -133,7 +133,7 @@ void UserList::writeUserList(QString fileName)
     }
 
     QJsonArray userListData;
-    auto data = m_users->getUsers();
+    auto data = m_users->getUsersList();
     for (auto user : data)
     {
         QJsonObject userInfo;

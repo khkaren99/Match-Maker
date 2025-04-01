@@ -14,7 +14,7 @@ private:
         Node *parent = nullptr;
         QVector<Node *> children;
         QString gameName;
-        User user;
+        const User *user;
     };
 
     QVector<Node *> tree;
@@ -38,6 +38,6 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    void addUser(const User &user);
+    void addUser(const User *user);
     void removeUser(const QString &userName);
 };

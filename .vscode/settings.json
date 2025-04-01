@@ -97,6 +97,8 @@
         "qfiledialog": "cpp",
         "qtextstream": "cpp",
         "qsplitter": "cpp",
-        "qfile": "cpp"
+        "qfile": "cpp",
+        "qprocess": "cpp",
+        "qstring": "cpp"
     }
 }
