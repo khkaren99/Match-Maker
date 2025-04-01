@@ -1,3 +1,9 @@
 Install QT: https://wiki.qt.io/Install_Qt_5_on_Ubuntu
 
 Getting start QT: https://doc.qt.io/qt-5/gettingstarted.html
+
+Usage:
+	Build: run ./build.sh
+	Run app: ./build/bin/app
+	Run game: ./build/bin/game gameName userName1 userName2
+		gameName: XO3 | RPS | Minesweeper

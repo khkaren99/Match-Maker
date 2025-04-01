@@ -103,3 +103,11 @@ Linux
 C++ standard – 17
 
 Qt version – 5
+
+
+## Usage
+Build: run ./build.sh
+
+Run app: ./build/bin/app
+
+Run game: ./build/bin/game gameName userName1 userName2
