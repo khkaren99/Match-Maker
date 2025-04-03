@@ -167,6 +167,26 @@ void UserList::setupContextMenu()
     connect(removeAction, &QAction::triggered, this, &UserList::removeUser);
     m_tableView->addAction(removeAction);
 
+    auto requestMatchAction = new QAction("Request Match For", m_tableView);
+    connect(requestMatchAction, &QAction::triggered, [&]()
+    {
+        QModelIndexList selectedIndexes = m_tableView->selectionModel()->selectedRows();
+        QStringList userNames;
+        for (auto index = selectedIndexes.begin(); index != selectedIndexes.end(); ++index)
+            emit requestMatch(index->data().toString());
+    });
+    m_tableView->addAction(requestMatchAction);
+
+    auto freeMatchAction = new QAction("Free Matches For", m_tableView);
+    connect(freeMatchAction, &QAction::triggered, [&]()
+    {
+        QModelIndexList selectedIndexes = m_tableView->selectionModel()->selectedRows();
+        QStringList userNames;
+        for (auto index = selectedIndexes.begin(); index != selectedIndexes.end(); ++index)
+            emit freeMatch(index->data().toString());
+    });
+    m_tableView->addAction(freeMatchAction);
+
     m_tableView->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 

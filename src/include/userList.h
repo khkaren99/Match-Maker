@@ -33,4 +33,8 @@ private:
 
     void setupContextMenu();
     void filter();
+
+signals:
+    void requestMatch(const QString& userName);
+    void freeMatch(const QString& userName);
 };

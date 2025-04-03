@@ -26,6 +26,8 @@ public:
 	void requestMatch(const QString &userName);
 	void freeUser(const QString &userName);
 
+	void printWaitList() const;
+
 private:
 	void tryFindMatch(const QString &userName);
 	void runMatch(const QString &game, const QString &user1, const QString &user2);

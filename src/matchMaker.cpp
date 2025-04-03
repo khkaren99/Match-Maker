@@ -1,5 +1,8 @@
 #include "matchMaker.h"
 
+#include <time.h>
+#include <stdlib.h>
+
 #include <QDebug>
 #include <QMessageBox>
 
@@ -51,8 +54,17 @@ void MatchMaker::freeUser(const QString &userName)
 	}
 }
 
+void MatchMaker::printWaitList() const
+{
+	for (auto userName : m_waitList.keys())
+	{
+		qDebug() << userName;
+	}
+}
+
 void MatchMaker::tryFindMatch(const QString &user1)
 {
+	srand(time(NULL));
 	for (auto user2 : m_waitList.keys())
 	{
 		if (user1 == user2)
@@ -62,13 +74,24 @@ void MatchMaker::tryFindMatch(const QString &user1)
 			continue;
 
 		// Look common games
+		QVector<QString> matchingGame;
 		for (auto game : m_waitList[user1]->preferredGame.keys())
 		{
 			if (m_waitList[user2]->preferredGame.contains(game))
 			{
-				runMatch(game, user1, user2);
-				return;
+				// check reating which is no greater than 3 or no lower than 1 of the requester’s rating
+				int rateUser1 = m_waitList[user1]->preferredGame[game];
+				int rateUser2 = m_waitList[user2]->preferredGame[game];
+				if (qAbs(rateUser1 - rateUser2) <= 4)
+					matchingGame.push_back(game);
 			}
+		}
+		// run a rundom game
+		if (matchingGame.size() > 0)
+		{
+			int gameCount = matchingGame.size();
+			runMatch(matchingGame[rand() % gameCount], user1, user2);
+			return;
 		}
 	}
 }

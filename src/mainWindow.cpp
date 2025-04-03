@@ -23,6 +23,9 @@ MainWindow::MainWindow(DataManager *data, MatchMaker *core)
     spliter->addWidget(m_userList);
     setCentralWidget(spliter);
 
+    connect(m_userList, &UserList::requestMatch, m_core, &MatchMaker::requestMatch);
+    connect(m_userList, &UserList::freeMatch, m_core, &MatchMaker::freeUser);
+
     setupMenu();
 }
 
@@ -103,8 +106,10 @@ void MainWindow::setupMenu()
     QMenu *matchMakerMenu = menuBar()->addMenu(tr("Match Maker"));
     QAction *matchAct = new QAction(tr("Request Match"), this);
     QAction *freeAct = new QAction(tr("Free User"), this);
+    QAction *printAct = new QAction(tr("Print User"), this);
     matchMakerMenu->addAction(matchAct);
     matchMakerMenu->addAction(freeAct);
+    matchMakerMenu->addAction(printAct);
     connect(matchAct, &QAction::triggered, [&]()
     {
         QString userName = askUserName();
@@ -114,5 +119,9 @@ void MainWindow::setupMenu()
     {
         QString userName = askUserName();
         m_core->freeUser(userName);
+    });
+    connect(printAct, &QAction::triggered, [&]()
+    {
+        m_core->printWaitList();
     });
 }
